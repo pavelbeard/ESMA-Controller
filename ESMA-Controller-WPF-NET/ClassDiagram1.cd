@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ESMA.Chromedriver.ChromeController">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACACEQAABAAAAAAAAAAAAAAAAIAAAACgAAGAI=</HashCode>
+      <FileName>Chromedriver\ChromeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.Controllers.ChangesController">
+    <Position X="3.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Controllers\Controllers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.Controllers.ProcessController">
+    <Position X="5.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Controllers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.Controllers.VideoConferenceController">
+    <Position X="2" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAgAAAFAAAAAQI=</HashCode>
+      <FileName>Controllers\Controllers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataLoaders.ChangesLoader">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataLoaders\DataLoaders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataLoaders.ProcessLoader">
+    <Position X="8.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataLoaders\DataLoaders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataLoaders.VCLoader">
+    <Position X="10" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQIAIAAAAAAAAAAAAAAAAEAAAACAAAAAA=</HashCode>
+      <FileName>DataLoaders\DataLoaders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.ViewModel.ViewModel">
+    <Position X="18" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEYAAEAEACREBAAkAAAAAQAAAAFgAAAIIQAAQAAGAAA=</HashCode>
+      <FileName>ViewModel\ViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.ViewModel.RelayCommand" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ESMA.ViewModel.CSWindow">
+    <Position X="12.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAQAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.ViewModel.BWorkerGW">
+    <Position X="14.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAIAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataInterfaces.VideoConference" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAACAEACAAAAYAAAEAAAgAAAAAAAAAAAQAACAQE=</HashCode>
+      <FileName>DataInterfaces\DataInterfaces.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ESMA.DataInterfaces.Changes" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAABAAAAAAIAAAAAIAgAAAAAAAAAEAAgAAAAI=</HashCode>
+      <FileName>DataInterfaces\DataInterfaces.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ESMA.DataInterfaces.Process" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAIAAACAAAgABAAAUAQAAAAAAAAAA=</HashCode>
+      <FileName>DataInterfaces\DataInterfaces.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ESMA.DataCollections.JobsConference">
+    <Position X="22.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCollections\DataCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataCollections.JobsChanges">
+    <Position X="24.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCollections\DataCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataCollections.JobsProcess">
+    <Position X="26.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCollections\DataCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataCollections.CloseCode">
+    <Position X="21" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataCollections\DataCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ESMA.DataCollections.Names">
+    <Position X="21" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAIA=</HashCode>
+      <FileName>DataCollections\DataCollections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

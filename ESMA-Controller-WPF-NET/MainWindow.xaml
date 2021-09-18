@@ -1,0 +1,757 @@
+﻿<Window x:Name="window" x:Class="ESMA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ESMA" 
+        xmlns:src="clr-namespace:ESMA.DataCollections"
+        xmlns:vm="clr-namespace:ESMA.ViewModel" 
+        xmlns:calendars=" http://schemas.syncfusion.com/wpf" xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
+        mc:Ignorable="d"
+        Title="ESMA-Controller" 
+        Height="600" Width="1024" 
+        MinHeight="600" MinWidth="1024" 
+        SizeChanged="Window_SizeChanged" Closed="window_Closed">
+    <Window.Resources>
+        <vm:AppViewModel x:Key="ViewModel"/>
+        <vm:StringConverter x:Key="Converter"/>
+        <Style x:Key="TabItemHeaderStyle" TargetType="TabItem">
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="BorderThickness" Value="0.5"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+        </Style>
+        <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+        </Style>
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding VC_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding C_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding P_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CTC_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CCE_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Selector_Status}" Value="Завершено">
+                    <Setter Property="Background" Value="LimeGreen"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding VC_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding C_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding P_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CTC_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CCE_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Selector_Status}" Value="Ошибка">
+                    <Setter Property="Background" Value="OrangeRed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding VC_Status}" Value="Приостановлено">
+                    <Setter Property="Background" Value="Yellow"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding VC_Status}" Value="Сброшено">
+                    <Setter Property="Background" Value="CornflowerBlue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding C_Status}" Value="Сброшено">
+                    <Setter Property="Background" Value="CornflowerBlue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding P_Status}" Value="Сброшено">
+                    <Setter Property="Background" Value="CornflowerBlue"/>
+                </DataTrigger>
+
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Style.Triggers>
+                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="BorderBrush" Value="BlueViolet"/>
+                </Trigger>
+            </Style.Triggers>
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridCell_PreviewMouseLeftButtonDown"/>
+            <EventSetter Event="PreviewTextInput" Handler="DataGridCell_PreviewTextInput"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style x:Key="ControlButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="75"/>
+            <Setter Property="Width" Value="48.3"/>
+        </Style>
+        <Style x:Key="StartButtonStyle" BasedOn="{StaticResource ControlButtonStyle}" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image
+                                   Width="30" Source="/icons/startbuttonactive.png"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image
+                                   Width="30" Source="/icons/startbuttoninactive.png"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Background" Value="DarkSeaGreen"/>
+        </Style>
+        <Style x:Key="PauseButtonStyle" BasedOn="{StaticResource ControlButtonStyle}" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/icons/resumebuttonactive.png"
+                                   Width="30"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/icons/resumebuttoninactive.png"
+                                   Width="30"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Background" Value="Orange"/>
+        </Style>
+        <Style x:Key="StopButtonStyle" BasedOn="{StaticResource ControlButtonStyle}" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/icons/stopbuttonactive.png"
+                                   Width="30"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <Image Source="/icons/stopbuttoninactive.png"
+                                   Width="30"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Background" Value="PaleVioletRed"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="210" x:Name="Col1"/>
+            <ColumnDefinition Width="201*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="116*"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer
+            Background="Lavender"
+            x:Name="ScrollBar"
+            Grid.Column="0"
+            Grid.RowSpan="2"
+            Margin="0,24,0,5" HorizontalAlignment="Left" Width="184">
+            <StackPanel Margin="5,0,0,0" Width="160" HorizontalAlignment="Left">
+                <Border Height="5"/>
+                <Button x:Name="ScanBtn"
+                        Content="***************" 
+                        Height="75" 
+                        Width="155"
+                        Command="{Binding Scan}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Button x:Name="AddBtn" 
+                        Content="Добавить строку" 
+                        Height="75" 
+                        Width="155" 
+                        Command="{Binding Add}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Button x:Name="InsertBtn" 
+                        Content="Вставить строку" 
+                        Height="75"
+                        Width="155"
+                        Command="{Binding Insert}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Button x:Name="DeleteBtn" 
+                        Content="Удалить строку" 
+                        Height="75" 
+                        Width="155"                       
+                        Command="{Binding Delete}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Grid>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="2.5">
+                        <Button Style="{StaticResource StartButtonStyle}"
+                                Command="{Binding Start}"
+                                x:Name="StartBtn"/>
+                        <Border Width="5"/>
+                        <Button Style="{StaticResource PauseButtonStyle}"
+                                Command="{Binding Pause}"
+                                x:Name="PauseBtn"/>
+                        <Border Width="5"/>
+                        <Button Style="{StaticResource StopButtonStyle}"
+                                x:Name="StopBtn"
+                                Command="{Binding Stop}"/>
+                    </StackPanel>
+                </Grid>
+                <Border Height="5"/>
+                <Button x:Name="ResetBtn" 
+                        Content="Сброс" 
+                        Height="75" 
+                        Width="155"
+                        Background="LightBlue"
+                        Command="{Binding Reset}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Button x:Name="TestBtn"    
+                        Content="Test" 
+                        Height="75" 
+                        Width="155" 
+                        Command="{Binding Debug}"
+                        Style="{StaticResource ButtonStyle}"/>
+                <Border Height="5"/>
+                <Label Content="XPATH date"
+                       Width="155"
+                       x:Name="FirstDateLabel"/>
+                <TextBox x:Name="FirstDateDebug"
+                         Width="155"/>
+            </StackPanel>
+        </ScrollViewer>
+        <DockPanel x:Name="dockPanel"
+            Grid.ColumnSpan="2"
+            VerticalAlignment="Top" Height="19">
+            <Menu
+                DockPanel.Dock="Top" Height="19">
+                <Menu.Style>
+                    <Style TargetType="Menu">
+                        <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+                    </Style>
+                </Menu.Style>
+                <MenuItem
+                    Header="Файл">
+                    <MenuItem
+                        Header="Новая задача"
+                        Command="{Binding NewTask}"
+                        InputGestureText="CTRL+N"/>
+                    <MenuItem
+                        Header="Открыть задачу"
+                        Command="{Binding OpenTask}"
+                        InputGestureText="CTRL+SHIFT+O"/>
+                    <MenuItem
+                        x:Name="saveTask"
+                        Header="Сохранить задачу"/>
+                    <MenuItem
+                        x:Name="closeTask"
+                        Header="Закрыть задачу"/>
+                    <MenuItem
+                        x:Name="openConfig"
+                        Header="Открыть конфигурацию" 
+                        Command="{Binding OpenConfiguration}" 
+                        InputGestureText="CTRL+O">
+                    </MenuItem>
+                    <MenuItem
+                        x:Name="saveConfig"
+                        Header="Сохранить конфигурацию"
+                        Command="{Binding SaveConfiguration}"
+                        InputGestureText="CTRL+S"/>
+                    <MenuItem
+                        x:Name="saveConfigAs"
+                        Header="Сохранить как..."
+                        Command="{Binding SaveAsCongiguration}"/>
+                    <MenuItem Header="Закрыть"/>
+                </MenuItem>
+                <MenuItem Header="Настройки"
+                          Command="{Binding OpenConferenceSettings}"/>
+                <MenuItem Header="Горячие клавиши"/>
+                <MenuItem Header="О программе"
+                          Command="{Binding About}"/>
+                <MenuItem Header="Создать отчет по ЗИ"
+                          Command="{Binding CreateReport}"/>
+            </Menu>
+        </DockPanel>
+        <TabControl 
+            x:Name="modulesList"
+            HorizontalAlignment="Left"  
+            Margin="5,24,5,65" 
+            VerticalContentAlignment="Top" 
+            HorizontalContentAlignment="Center"
+            Visibility="Hidden"
+            BorderThickness="0.5" 
+            Grid.Column="1"
+            Grid.RowSpan="3" 
+            SelectionChanged="modulesList_SelectionChanged">
+            <TabItem 
+                x:Name="VC"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid>
+                    <DataGrid 
+                        x:Name="Conference"
+                        CanUserSortColumns="True"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="True" 
+                        CanUserResizeRows="False" 
+                        ColumnWidth="*"
+                        AutoGenerateColumns="False"
+                        Background="Lavender"
+                        Style="{StaticResource DataGridStyle}"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}"
+                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                        <DataGrid.Resources>
+                            <src:JobsConference x:Key="jobsConf"/>
+                            <src:CloseCode x:Key="closeCode"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                                CanUserSort="True" 
+                                IsReadOnly="False" 
+                                Header="ID&#10;Конференции" 
+                                Binding="{Binding IdConference}"/>
+                            <DataGridTextColumn 
+                                Header="Примечание&#10;"
+                                Binding="{Binding VC_Theme}"/>
+                            <DataGridTemplateColumn 
+                                Header="Дата&#10;совещания">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock 
+                                            Text="{Binding VC_Date, StringFormat={}{0:dd/MM/yy}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <DatePicker 
+                                            SelectedDate="{Binding VC_Date}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn 
+                                Header="Время&#10;начала" 
+                                Binding="{Binding VC_TimeStart, StringFormat='HH:mm'}"/>
+                            <DataGridTextColumn 
+                                Header="Время&#10;окончания" 
+                                Binding="{Binding VC_TimeEnd, StringFormat='HH:mm'}"/>
+                            <DataGridComboBoxColumn 
+                                Header="Работы&#10;" 
+                                ItemsSource="{StaticResource jobsConf}" 
+                                SelectedItemBinding="{Binding VC_Job}"/>
+                            <DataGridCheckBoxColumn 
+                                Header="Внести&#10;опер. персонал?" 
+                                Binding="{Binding OperPersonal}" 
+                                CanUserSort="False">
+                                <DataGridCheckBoxColumn.ElementStyle>
+                                    <Style TargetType="CheckBox">
+                                        <Style.Triggers>
+                                            <DataTrigger 
+                                                Binding="{Binding CloseCode}" 
+                                                Value="Отменено">
+                                                <Setter 
+                                                    Property="IsChecked" 
+                                                    Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridCheckBoxColumn.ElementStyle>
+                            </DataGridCheckBoxColumn>
+                            <DataGridTemplateColumn 
+                                Header="ФИО&#10;">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander 
+                                            Header="Список сотрудников">
+                                            <StackPanel>
+                                                <Button 
+                                                    Content="Изменить ФИО"
+                                                    DataContext="{StaticResource ViewModel}"
+                                                    Command="{Binding ChangeNames}"/>
+                                                <ListBox 
+                                                        ItemsSource="{Binding VC_Names}"
+                                                        Height="100"/>
+                                            </StackPanel>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridCheckBoxColumn 
+                                Header="Закрыть&#10;совещание?" 
+                                Binding="{Binding CloseConference}" 
+                                CanUserSort="False"/>
+                            <DataGridComboBoxColumn 
+                                Header="Код&#10;закрытия" 
+                                ItemsSource="{StaticResource closeCode}" 
+                                SelectedItemBinding="{Binding CloseCode}"/>
+                            <DataGridTextColumn 
+                                Header="Статус&#10;выполнения" 
+                                Binding="{Binding VC_Status}" 
+                                IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem 
+                x:Name="C"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid 
+                        x:Name="Changes"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="True" 
+                        CanUserResizeRows="False" 
+                        ColumnWidth="*"
+                        AutoGenerateColumns="False"
+                        Background="Lavender"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}"
+                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                        <DataGrid.Resources>
+                            <src:JobsChanges x:Key="jobsChanges"/>
+                            <vm:Changes x:Key="chNames"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                                Header="ID Запроса на изменение" 
+                                Binding="{Binding IdChanges}"/>
+                            <DataGridTextColumn 
+                                Header="Примечание" 
+                                Binding="{Binding C_Description}"/>
+                            <DataGridTextColumn 
+                                Header="Время начала" 
+                                Binding="{Binding C_TimeStart, StringFormat={}{0:HH:mm}}"/>
+                            <DataGridTextColumn 
+                                Header="Время окончания" 
+                                Binding="{Binding C_TimeEnd, StringFormat={}{0:HH:mm}}"/>
+                            <DataGridComboBoxColumn 
+                                Header="Работы" 
+                                ItemsSource="{StaticResource jobsChanges}" 
+                                SelectedItemBinding="{Binding C_Job}"/>
+                            <DataGridTemplateColumn 
+                                Header="ФИО">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander 
+                                            Header="Список сотрудников">
+                                            <StackPanel>
+                                                <Button
+                                                    Content="Изменить список" 
+                                                    DataContext="{StaticResource ViewModel}"
+                                                    Command="{Binding ChangeNames}"/>
+                                                <ListBox 
+                                                    ItemsSource="{Binding C_Names}"
+                                                    Height="100"/>
+                                            </StackPanel>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn 
+                                Header="Статус выполнения" 
+                                Binding="{Binding C_Status}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem 
+                x:Name="P"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid 
+                        x:Name="Process"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="True" 
+                        CanUserResizeRows="False" 
+                        ColumnWidth="*"
+                        AutoGenerateColumns="False"
+                        Background="Lavender"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}"
+                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                        <DataGrid.Resources>
+                            <src:JobsProcess x:Key="jobsProcess"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                                Header="ID ГТП" 
+                                Binding="{Binding IdProcess}"/>
+                            <DataGridTextColumn 
+                                Header="Примечание" 
+                                Binding="{Binding P_Description}"/>
+                            <DataGridTextColumn 
+                                Header="Время начала" 
+                                Binding="{Binding P_TimeStart, StringFormat={}{0:HH:mm}}"/>
+                            <DataGridTextColumn 
+                                Header="Наличие события СУСП" 
+                                Binding="{Binding P_Event}"/>
+                            <DataGridComboBoxColumn 
+                                Header="Работы" 
+                                ItemsSource="{StaticResource jobsProcess}" 
+                                SelectedItemBinding="{Binding P_Job}"/>
+                            <DataGridTemplateColumn 
+                                Header="ФИО">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander 
+                                            Header="Список сотрудников">
+                                            <StackPanel>
+                                                <Button
+                                                    Content="Изменить список" 
+                                                    DataContext="{StaticResource ViewModel}"
+                                                    Command="{Binding ChangeNames}"/>
+                                                <ListBox 
+                                                    ItemsSource="{Binding P_Names}"
+                                                    Height="100"/>
+                                            </StackPanel>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn 
+                                Header="Статус выполнения" 
+                                Binding="{Binding P_Status}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem
+                x:Name="CC"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid>
+                    <DataGrid
+                        x:Name="ChangesCreate"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="True" 
+                        CanUserResizeRows="False" 
+                        ColumnWidth="*"
+                        AutoGenerateColumns="False"
+                        Background="Lavender"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}"
+                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                        <DataGrid.Resources>
+
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                                Header="ID Текущего ЗИ" 
+                                Binding="{Binding IdCTC}"/>
+                            <DataGridTextColumn 
+                                Header="Примечание" 
+                                Binding="{Binding CTC_Description}"/>
+                            <DataGridTemplateColumn
+                                Header="Число начала работ">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock 
+                                                Text="{Binding CTC_DateStart, StringFormat='dd/MM/yy'}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <DatePicker 
+                                            SelectedDate="{Binding CTC_DateStart}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn 
+                                Header="Время начала работ" 
+                                Binding="{Binding CTC_TimeStart, StringFormat='HH:mm'}"/>
+                            <DataGridTemplateColumn
+                                Header="Число конца работ">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock 
+                                                Text="{Binding CTC_DateEnd, StringFormat='dd/MM/yy'}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <DatePicker 
+                                            SelectedDate="{Binding CTC_DateEnd}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn 
+                                Header="Время конца работ" 
+                                Binding="{Binding CTC_TimeEnd, StringFormat='HH:mm'}"/>
+                            <DataGridTextColumn 
+                                Header="Статус&#10;выполнения" 
+                                Binding="{Binding CTC_Status}" 
+                                IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem
+                x:Name="PC"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid
+                    Width="{Binding ElementName=ChangesCreate, Mode=OneWay}"
+                    Background="Lavender">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Число 1:"
+                           Padding="10"/>
+                    <DatePicker
+                        IsEnabled="False"
+                        x:Name="FirstDP"
+                        Grid.Row="1"
+                        Margin="10, 0, 10, 0"
+                        Width="200"
+                        SelectedDate="{Binding StartDate}"/>
+                    <Label 
+                        Grid.Column="1"
+                        Content="Число 2:"
+                        Padding="10"/>
+                    <DatePicker
+                        IsEnabled="False"
+                        x:Name="SecondDP"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="10, 0, 10, 0"
+                        Width="200"
+                        SelectedDate="{Binding EndDate}"/>
+                    <Label
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        Content="Пока просто нажимаем 'старт'"/>
+                </Grid>
+            </TabItem>
+            <TabItem
+                x:Name="CTCl"
+                Style="{StaticResource TabItemHeaderStyle}">
+                <Grid>
+                    <DataGrid
+                        x:Name="ChangesClose"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False" 
+                        CanUserResizeColumns="True" 
+                        CanUserResizeRows="False" 
+                        ColumnWidth="*"
+                        AutoGenerateColumns="False"
+                        Background="Lavender"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}"
+                        ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}">
+                        <DataGrid.Resources>
+
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                                Header="ID Текущего ЗИ" 
+                                Binding="{Binding IdCCE}"/>
+                            <DataGridTextColumn 
+                                Header="Примечание" 
+                                Binding="{Binding CCE_Description}"/>
+                            <DataGridTextColumn 
+                                Header="Статус&#10;выполнения" 
+                                Binding="{Binding CCE_Status}" 
+                                IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Grid 
+            Grid.ColumnSpan="2" 
+            Grid.Row="1" 
+            Visibility="Hidden"
+            x:Name="ProgressBar_Grid"
+            HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding ElementName=Col1, Path=Width}"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar
+                Grid.Column="1"
+                x:Name="ProgressBar_Main"
+                HorizontalAlignment="Left"
+                Width="400"
+                Margin="5,5,0,5"
+                BorderThickness="0"
+                Value="0"
+                Foreground="MediumBlue"/>
+            <TextBlock
+                Grid.Column="1"
+                x:Name="ProgressBar_Main_Text"
+                Width="{Binding ActualWidth, ElementName=ProgressBar_Main, Mode=OneWay}"
+                HorizontalAlignment="Left"
+                Margin="5,5,0,5"
+                TextAlignment="Center"
+                Padding="12"
+                Foreground="Red"
+                FontSize="24"/>
+        </Grid>
+        <TextBlock 
+            Visibility="Hidden"
+            Background="Lavender"
+            x:Name="Info"
+            Grid.Column="1"
+            Grid.RowSpan="2" 
+            Margin="410,5,0,0"
+            Padding="10"
+            Grid.Row="1"/>
+        <DockPanel
+            x:Name="DockPanel_Bottom"
+            Grid.ColumnSpan="2"
+            Grid.Row="2"
+            HorizontalAlignment="Left"
+            Height="60"
+            Width="{Binding ActualWidth, ElementName=dockPanel, Mode=OneWay}">
+            <StatusBar 
+                DockPanel.Dock="Bottom" >
+                <StatusBarItem 
+                    x:Name="StatusBar" 
+                    HorizontalContentAlignment="Left" 
+                    HorizontalAlignment="Left"
+                    Padding="10">
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
+    </Grid>
+</Window>
