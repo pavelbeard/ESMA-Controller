@@ -150,13 +150,17 @@
             Grid.Row="1"
             Grid.Column="1"
             Style="{StaticResource GroupBoxStyle}"
-            Header="Исправить часы?">
+            Header="и.о. Ст. эл/мех">
             <UniformGrid
                 Columns="1">
-                <CheckBox x:Name="DebugBox"
+                <ComboBox 
+                    x:Name="RefrBox"
+                    Margin="20,10,10,10"
+                    ItemsSource="{StaticResource repNames}" Height="84"/>
+                <!--<CheckBox x:Name="DebugBox"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          Command="{Binding DebugHours}"/>
+                          Command="{Binding DebugHours}"/>-->
                 <!--<Button
                     IsEnabled="False"
                     Content="Да" 

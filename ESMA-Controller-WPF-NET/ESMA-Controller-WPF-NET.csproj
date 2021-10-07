@@ -5,19 +5,20 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>ESMA</RootNamespace>
     <UseWPF>true</UseWPF>
-    <Version>1.1</Version>
+    <Version>1.1.5</Version>
     <Authors>Pavel Borodin</Authors>
     <Company>JSC "RZD"</Company>
     <PackageId>ESMA-Controller</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PackageIcon>1b5f9cf2cdf2b5b05d6d2c918e8adcdd_icon.png</PackageIcon>
-    <AssemblyVersion>1.1.1.1</AssemblyVersion>
-    <FileVersion>1.1.1.1</FileVersion>
+    <AssemblyVersion>1.1.5.0</AssemblyVersion>
+    <FileVersion>1.1.5.0</FileVersion>
     <NeutralLanguage></NeutralLanguage>
     <PackageReleaseNotes>v1.1.0.5 - Добавлена возможность создавать ЗИ
 v1.1.1.0 - Добавлена возможность согласовывать план работ
-v1.1.1.1 - Фикс багов</PackageReleaseNotes>
+v1.1.1.1 - Фикс багов
+v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,14 +63,14 @@ v1.1.1.1 - Фикс багов</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="5.7.4" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.36" />
+    <PackageReference Include="EPPlus" Version="5.7.5" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.37" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Orc.Controls" Version="4.5.3" />
+    <PackageReference Include="Orc.Controls" Version="4.5.6" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="93.0.4577.6300" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="94.0.4606.6100" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>

@@ -253,10 +253,17 @@ namespace ESMA.DataLoaders
             {
                 try
                 {
+
                     LoginWindow();
                     progress.Report(10);
 
-                    webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
+                    //changeframe
+                    webDriver.SwitchTo().Frame("frame2");
+
+                    Thread.Sleep(750);
+
+                    webDriver.FindElement(By.XPath("//*[@id=\"img_homes\"]")).Click();
+                    //webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
                     webDriver.SwitchTo().Frame("main_frame");
@@ -308,6 +315,11 @@ namespace ESMA.DataLoaders
                 {
                     LoginWindow();
                     progress.Report(33);
+
+                    //changeframe
+                    webDriver.SwitchTo().Frame("frame2");
+
+                    Thread.Sleep(750);
 
                     webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();

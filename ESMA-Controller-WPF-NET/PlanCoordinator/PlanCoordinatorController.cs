@@ -14,8 +14,6 @@ namespace ESMA
 {
     public class PlanCoordinatorController : ChromeController
     {
-        private int rowsCount = 12;
-
         public Task<bool> Coordinate(IProgress<double> progress)
         {
             return Task.Run(() => 
@@ -34,6 +32,7 @@ namespace ESMA
                 //Смена фрейма
                 webDriver.SwitchTo().Frame("main_frame");
                 //Нажимаем на выпадающий список
+                Thread.Sleep(750);
                 webDriver.FindElement(By.XPath("//*[@id=\"select2-currentTeamName-container\"]")).Click();
                 Thread.Sleep(500);
                 //ищем рвб-11
@@ -71,6 +70,19 @@ namespace ESMA
                     }
                     else
                     {
+                        //список работников для сверки
+                        var N = webDriver.FindElements(By.XPath("//*[contains(@name, 'emplName')]"));
+                        //переменная числа, обозначающая референта
+                        int refr = 0;
+
+                        for (int i = 1; i <= N.Count; i++)
+                        {
+                            //в дальнейшем здесь будет вываливаться список референтов
+                            if (N[i - 1].Text == "Степанов Михаил Александрович")
+                            {
+                                refr = i;
+                            }
+                        }
                         //Выбираем ст/элмех. ОДИН РАЗ
                         Thread.Sleep(1000);
                         if (once == 0)
@@ -78,7 +90,7 @@ namespace ESMA
                             //webDriver.FindElement(By.XPath("//*[text()='Степанов Михаил Александрович']")).
                             //var test = webDriver.FindElement(By.XPath("//*[text()='Степанов Михаил Александрович']"));
                             //var testStr = test.ToString();
-                            webDriver.FindElement(By.XPath("//*[@id=\"DATA_TABLE\"]/tbody/tr[11]/td/div[1]/div/img")).Click();
+                            webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr}]/td/div[1]/div/img")).Click();
                             once++;
                         }
                         else
@@ -88,10 +100,12 @@ namespace ESMA
                         }
                         Thread.Sleep(1000);
                         //считаем количество строк в таблице ст/элмех.
-                        var t = /*"ЛР ОР: 11 ЛР ГТП: 12";*/webDriver.FindElement(By.XPath("//*[@id=\"DATA_TABLE\"]/tbody/tr[11]/td/div[3]/span")).Text;
+                        var t = webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr}]/td/div[3]/span")).Text;
                         //общее кол-во строк
                         int rows = 0;
+
                         var matches = Regex.Matches(t, @"\d+").ToList();
+
                         if (matches.Count == 1)
                         {
                             rows = int.Parse(matches[0].Value);
@@ -106,13 +120,13 @@ namespace ESMA
                             //выбираем и вставляем следующее время
                             for (int i = 0; i < rows; i++)
                             {
-                                webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{rowsCount + i}]/td[10]/input[@name=\"time_begin\"]")).Click();
-                                webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{rowsCount + i}]/td[10]/input[@name=\"time_begin\"]")).SendKeys($"08{10 + i}");
+                                webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr + 1 + i}]/td[10]")).Click(); 
+                                webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr + 1 + i}]/td[10]/input[@name=\"time_begin\"]")).SendKeys($"08{10 + i}");
                             }
                             //проверяем поле на наличие жд-транспорта и другой фигни
                             for (int i = 0; i < rows + 1; i++)
                             {
-                                var field7 = webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{rowsCount + i}]/td[7]/select"));
+                                var field7 = webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr + 1 +  i}]/td[7]/select"));
                                 var select = new SelectElement(field7);
                                 select.SelectByIndex(0);
                                 Thread.Sleep(200);

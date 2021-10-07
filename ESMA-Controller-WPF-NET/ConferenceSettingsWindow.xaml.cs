@@ -30,6 +30,7 @@ namespace ESMA
             SilentModeCheckBox.IsChecked = t["SilentMode"];
             InNightBox.Text = t["InNight"];
             SNightBox.Text = t["SNight"];
+            RefrBox.Text = t["RefrEmp"];
             BossBox.Text = t["Boss"];
 
             DataContext = new AppViewModel(new JsonIO());
@@ -40,9 +41,11 @@ namespace ESMA
             js = new JsonIO();
             var inNight = InNightBox.SelectedItem;
             var sNight = SNightBox.SelectedItem;
+            var refrEmp = RefrBox.SelectedItem;
             var boss = BossBox.SelectedItem;
+
             js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, string> 
-            { ["InNight"] = inNight.ToString(), ["SNight"] = sNight.ToString(), ["Boss"] = boss.ToString() });
+            { ["InNight"] = inNight.ToString(), ["SNight"] = sNight.ToString(), ["RefrEmp"] = refrEmp.ToString(), ["Boss"] = boss.ToString() });
         }
     }
 }

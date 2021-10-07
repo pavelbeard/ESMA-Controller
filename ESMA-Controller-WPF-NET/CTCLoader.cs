@@ -24,6 +24,11 @@ namespace ESMA
 
                     progress.Report(10);
 
+                    //changeframe
+                    webDriver.SwitchTo().Frame("frame2");
+
+                    Thread.Sleep(750);
+
                     webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
