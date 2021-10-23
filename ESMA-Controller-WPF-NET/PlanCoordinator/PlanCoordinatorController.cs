@@ -87,9 +87,6 @@ namespace ESMA
                         Thread.Sleep(1000);
                         if (once == 0)
                         {
-                            //webDriver.FindElement(By.XPath("//*[text()='Степанов Михаил Александрович']")).
-                            //var test = webDriver.FindElement(By.XPath("//*[text()='Степанов Михаил Александрович']"));
-                            //var testStr = test.ToString();
                             webDriver.FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{refr}]/td/div[1]/div/img")).Click();
                             once++;
                         }

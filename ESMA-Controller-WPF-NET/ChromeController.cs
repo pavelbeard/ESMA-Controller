@@ -5,6 +5,7 @@ using MyLibrary;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace ESMA.Chromedriver
 
         protected string[] NamesArray { get; set; }
 
+        protected WebDriverWait webDriverWait;
         protected IWebDriver webDriver;
         protected ChromeDriverService cds;
         protected ChromeOptions chromeOptions;

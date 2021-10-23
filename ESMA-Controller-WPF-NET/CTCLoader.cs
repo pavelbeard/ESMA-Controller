@@ -1,6 +1,7 @@
 ﻿using ESMA.Chromedriver;
 using ESMA.ViewModel;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,11 @@ namespace ESMA
                     //changeframe
                     webDriver.SwitchTo().Frame("frame2");
 
+                    var wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(20));
                     Thread.Sleep(750);
+
+                    //ТЕСТОВАЯ СТРОКА. ДОЛЖНА ОПРОБОВАТЬСЯ В БЛИЖАЙШЕМ ПОДКЛЮЧЕНИИ К ЕСМЕ!
+                    //wait.Until(d => d.FindElement(By.XPath("//img[@title='Центральная страница']")));
 
                     webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
