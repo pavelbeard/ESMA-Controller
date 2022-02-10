@@ -72,6 +72,22 @@ namespace ESMA
             FirstDateDebug.Visibility = Visibility.Hidden;
             FirstDateLabel.Visibility = Visibility.Hidden;
             #endif
+
+            //DataCollections.ReportNames rp = new DataCollections.ReportNames();
+
+            //try
+            //{
+            //    var names = File.ReadAllLines(ConfigData.EmpListFile);
+
+            //    foreach (var name in names)
+            //    {
+            //        rp.Add(name);
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show($"{e}");
+            //}
         }
         
         private async void HeightListener()

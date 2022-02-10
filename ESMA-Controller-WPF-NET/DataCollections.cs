@@ -54,7 +54,8 @@ namespace ESMA.DataCollections
     {
         public ReportNames()
         {
-            Add("Тобольчик А.А.");
+
+            Add("Достойнова О.Г.");
             Add("Пчелкина Ю.М.");
             Add("Жаворонкина Н.В.");
             Add("Носкина Е.А.");

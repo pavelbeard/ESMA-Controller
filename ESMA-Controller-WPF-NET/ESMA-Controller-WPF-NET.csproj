@@ -5,13 +5,13 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>ESMA</RootNamespace>
     <UseWPF>true</UseWPF>
-    <Version>1.1.5</Version>
+    <Version>1.1.6</Version>
     <Authors>Pavel Borodin</Authors>
     <Company>JSC "RZD"</Company>
     <PackageId>ESMA-Controller</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <PackageIcon>1b5f9cf2cdf2b5b05d6d2c918e8adcdd_icon.png</PackageIcon>
+    <PackageIcon>msign.png</PackageIcon>
     <AssemblyVersion>1.1.5.0</AssemblyVersion>
     <FileVersion>1.1.5.0</FileVersion>
     <NeutralLanguage></NeutralLanguage>
@@ -22,13 +22,13 @@ v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin\Release\net5.0-windows\icons\**" />
     <Compile Remove="Logs\**" />
+    <EmbeddedResource Remove="bin\Release\net5.0-windows\icons\**" />
     <EmbeddedResource Remove="Logs\**" />
+    <None Remove="bin\Release\net5.0-windows\icons\**" />
     <None Remove="Logs\**" />
-    <None Include="bin\Release\net5.0-windows\icons\1b5f9cf2cdf2b5b05d6d2c918e8adcdd_icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <Page Remove="bin\Release\net5.0-windows\icons\**" />
     <Page Remove="Logs\**" />
   </ItemGroup>
 
@@ -83,19 +83,20 @@ v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
     <None Update="Configuration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="EmpList.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="vsign.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="msign.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
     <None Update="NamesList.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="bin\Release\net5.0-windows\icons\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +106,10 @@ v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
     <Resource Include="icons\startbuttoninactive.png" />
     <Resource Include="icons\stopbuttonactive.png" />
     <Resource Include="icons\stopbuttoninactive.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Release\net5.0-windows\" />
   </ItemGroup>
 
 </Project>
