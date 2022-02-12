@@ -1,8 +1,11 @@
-﻿using ESMA.Chromedriver;
+﻿using ESMA.ChangesCloser;
+using ESMA.Chromedriver;
 using ESMA.Controllers;
 using ESMA.DataLoaders;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using MyLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,21 +13,15 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Media;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
-using MyLibrary;
-using System.Text;
-using Newtonsoft.Json;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Media;
-using System.Diagnostics;
-using ESMA.ChangesCloser;
 
 namespace ESMA.ViewModel
 {
@@ -97,7 +94,7 @@ namespace ESMA.ViewModel
                 EndDate = DateTime.Parse(IData.Window.SecondDP.Text)
             };
         }
-        
+
         private readonly IJsonService js;
 
         public AppViewModel()
@@ -228,7 +225,7 @@ namespace ESMA.ViewModel
 
                 if (IData.Window?.modulesList.IsVisible ?? false)
                 {
-                    bool check = (t["Login"] != null) && (t["Password"] != null) && 
+                    bool check = (t["Login"] != null) && (t["Password"] != null) &&
                     IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden;
                     return MwCurrentTab switch
                     {
@@ -307,7 +304,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand OpenTask
         {
-            get => new RelayCommand(async obj => 
+            get => new RelayCommand(async obj =>
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {
@@ -326,7 +323,7 @@ namespace ESMA.ViewModel
                         ConfigData.TablesConfigPath = file;
                         await js.OpenConfig(file);
 
-                        IData.Window.modulesList.Visibility = Visibility.Visible; 
+                        IData.Window.modulesList.Visibility = Visibility.Visible;
                     }
                     else
                     {
@@ -348,7 +345,7 @@ namespace ESMA.ViewModel
 
                 if (ofd.ShowDialog() == true)
                 {
-                   await js.OpenConfig(ofd.FileName);
+                    await js.OpenConfig(ofd.FileName);
                 }
             },
                 obj => IData.Window.modulesList.Visibility == Visibility.Visible);
@@ -380,7 +377,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand SaveAsCongiguration
         {
-            get => new RelayCommand(async obj => 
+            get => new RelayCommand(async obj =>
             {
                 try
                 {
@@ -443,12 +440,12 @@ namespace ESMA.ViewModel
                     default: break;
                 }
             },
-                (obj) => IData.Window?.modulesList.IsVisible == true && 
+                (obj) => IData.Window?.modulesList.IsVisible == true &&
                 IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden);
         }
         public RelayCommand Insert
         {
-            get => new(obj => 
+            get => new(obj =>
             {
                 try
                 {
@@ -492,7 +489,7 @@ namespace ESMA.ViewModel
                 {
                 }
             },
-                (obj) => IData.Window?.modulesList.IsVisible == true && 
+                (obj) => IData.Window?.modulesList.IsVisible == true &&
                 IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden &&
                 MwCurrentTab != 4);
         }
@@ -538,14 +535,14 @@ namespace ESMA.ViewModel
                         3 => IData.Window?.ctcList?.Count > 0,
                         5 => IData.Window?.cceList?.Count > 0,
                         _ => false,
-                    }; 
+                    };
                 }
                 return false;
             });
         }
         public RelayCommand Start
         {
-            get => new(async obj => 
+            get => new(async obj =>
             {
                 try
                 {
@@ -561,7 +558,7 @@ namespace ESMA.ViewModel
                         IData.Window.ProgressBar_Main.BeginAnimation(ProgressBar.ValueProperty, da);
                         IData.Window.ProgressBar_Main_Text.Text = $"{Math.Round(value)}%";
                     });
-       
+
                     if (cts.IsCancellationRequested)
                     {
                         cts.Dispose();
@@ -665,7 +662,7 @@ namespace ESMA.ViewModel
             {
                 dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
 
-                bool check = (t["Login"] != null) && (t["Password"] != null) && 
+                bool check = (t["Login"] != null) && (t["Password"] != null) &&
                 IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden || StopTask.PauseRequest == true;
                 return MwCurrentTab switch
                 {
@@ -681,7 +678,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand Stop
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
                 cts.Cancel();
                 StopTask.StopRequest = true;
@@ -690,16 +687,16 @@ namespace ESMA.ViewModel
         }
         public RelayCommand Pause
         {
-            get => new(obj => 
+            get => new(obj =>
             {
                 cts.Cancel();
                 StopTask.PauseRequest = true;
-            }, 
+            },
                obj => IData.Window.ProgressBar_Grid.Visibility == Visibility.Visible && IData.Window.StartBtn.IsEnabled == false);
         }
         public RelayCommand StopDoubleClick
         {
-            get => new(obj => 
+            get => new(obj =>
             {
                 cts.Cancel();
                 StopTask.PauseRequest = true;
@@ -708,7 +705,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand Reset
         {
-            get => new(obj => 
+            get => new(obj =>
             {
                 static async void ClearTableInfo(string t)
                 {
@@ -767,7 +764,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand ChangeNames
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
@@ -781,7 +778,7 @@ namespace ESMA.ViewModel
                     switch (MwCurrentTab)
                     {
                         case 0:
-                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names = 
+                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
                                 new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         case 1:
@@ -800,16 +797,16 @@ namespace ESMA.ViewModel
         }
         public RelayCommand ChangePrimNames
         {
-            get => new RelayCommand(async obj => 
+            get => new RelayCommand(async obj =>
             {
                 System.Diagnostics.Process p = null;
 
                 if (Directory.Exists(@"C:\Program Files\Notepad++") && ConfigData.NamesListFile != "null")
-                   p = System.Diagnostics.Process.Start(@"C:\Program Files\Notepad++\notepad++.exe", ConfigData.NamesListFile);
+                    p = System.Diagnostics.Process.Start(@"C:\Program Files\Notepad++\notepad++.exe", ConfigData.NamesListFile);
                 else
-                   p = System.Diagnostics.Process.Start("notepad.exe", ConfigData.NamesListFile);
+                    p = System.Diagnostics.Process.Start("notepad.exe", ConfigData.NamesListFile);
 
-                await Task.Run(() => 
+                await Task.Run(() =>
                 {
                     while (true)
                     {
@@ -827,7 +824,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand OpenConferenceSettings
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
                 var conference = new ConferenceSettingsWindow
                 {
@@ -840,9 +837,9 @@ namespace ESMA.ViewModel
         }
         public RelayCommand Accept
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
-                if ((IData.CsWindow.StartDate.Text != "" && IData.CsWindow.EndDate.Text != "") 
+                if ((IData.CsWindow.StartDate.Text != "" && IData.CsWindow.EndDate.Text != "")
                 || (IData.CsWindow.StartDate.Text != "" || IData.CsWindow.EndDate.Text != ""))
                 {
                     IData.StartDateValue = DateTime.Parse(IData.CsWindow.StartDate.Text);
@@ -857,7 +854,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand ResetTime
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
                 IData.CsWindow.StartDate.Text = DateTime.Now.ToString();
                 IData.CsWindow.EndDate.Text = DateTime.Now.ToString();
@@ -868,7 +865,7 @@ namespace ESMA.ViewModel
         }
         public RelayCommand Authorization
         {
-            get => new RelayCommand(async obj => 
+            get => new RelayCommand(async obj =>
             {
                 string login = IData.CsWindow.loginField.Text;
                 string password = IData.CsWindow.passwordField.Password;
@@ -881,12 +878,12 @@ namespace ESMA.ViewModel
                 {
                     MessageBox.Show("Пустые поля", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                
+
             });
         }
         public RelayCommand ResetAuthorizationData
         {
-            get => new RelayCommand(async obj => 
+            get => new RelayCommand(async obj =>
             {
                 await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string> { ["Login"] = default, ["Password"] = default });
                 IData.CsWindow.loginField.Text = default;
@@ -895,17 +892,17 @@ namespace ESMA.ViewModel
         }
         public RelayCommand ResetData
         {
-            get => new RelayCommand(async obj => 
-            { 
+            get => new RelayCommand(async obj =>
+            {
                 //await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, T>)
             });
         }
         public RelayCommand SilentMode
         {
-            get => new RelayCommand(obj => 
+            get => new RelayCommand(obj =>
             {
                 bool t = (bool)IData.CsWindow.SilentModeCheckBox.IsChecked;
-                js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, bool> { ["SilentMode"] = t});
+                js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, bool> { ["SilentMode"] = t });
             });
         }
         public RelayCommand BrowseFolder
@@ -926,14 +923,14 @@ namespace ESMA.ViewModel
                 }
             });
         }
-        
+
         public RelayCommand About
         {
             get => new RelayCommand(obj =>
             {
                 string about =
                 string.Format(
-                $"{"Эта программа создана для того, чтобы облегчить \nи без того трудную жизнь на связи совещаний\n", 10}"+
+                $"{"Эта программа создана для того, чтобы облегчить \nи без того трудную жизнь на связи совещаний\n",10}" +
                 $"ESMA-Controller " +
                 $"v{Assembly.GetExecutingAssembly().GetName().Version}");
                 MessageBox.Show(about);
@@ -980,14 +977,14 @@ namespace ESMA.ViewModel
                     ReportData.Report = null;
                     MessageBox.Show($"Отчет создан.\nОн находится в:\n{Environment.CurrentDirectory}\\Reports");
                 }
-                
+
             },
                 check => IData.Window.changesList.Count > 0);
         }
 
         public static Task Info(string info)
         {
-            return Task.Run(() => 
+            return Task.Run(() =>
             {
                 SystemSounds.Asterisk.Play();
                 IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = info);
@@ -1018,7 +1015,7 @@ namespace ESMA.ViewModel
 
         public static async void ShowProgressBar()
         {
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 IData.Window.Dispatcher.Invoke(() =>
                 {
@@ -1031,14 +1028,14 @@ namespace ESMA.ViewModel
                     IData.Window.Info.Visibility = Visibility.Visible;
                     IData.Window.modulesList.Margin = new Thickness(5, 24, 5, 130);
                     IData.Window.ProgressBar_Grid.Visibility = Visibility.Visible;
-                    
+
                 });
                 Thread.Sleep(5000);
             });
         }
         public static async void HideProgressBar()
         {
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 IData.Window.Dispatcher.Invoke(() =>
                 {

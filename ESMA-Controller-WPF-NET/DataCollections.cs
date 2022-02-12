@@ -52,45 +52,33 @@ namespace ESMA.DataCollections
 
     public class ReportNames : ObservableCollection<string>
     {
+        private string[] empList = File.ReadAllLines(ConfigData.EmpListFile);
         public ReportNames()
         {
-
-            Add("Достойнова О.Г.");
-            Add("Пчелкина Ю.М.");
-            Add("Жаворонкина Н.В.");
-            Add("Носкина Е.А.");
-            Add("Жданова Н.В.");
-            Add("Васильева И.А.");
-            Add("Жукова Ю.М.");
-            Add("Кутакова Н.М.");
-            Add("Степачева И.Н.");
-            Add("Глубокова Е.Н.");
-            Add("Бородин П.А.");
-            Add("Хромов Д.А.");
-            Add("Степанов М.А.");
+            foreach (string emp in empList) Add(emp);
         }
     }
 
-    public static class ValuesCollection
-    {
-        public static string Login { get => "login"; }
-        public static string Password { get => "pass"; }
-        public static string SilentMode { get => "silentMode"; }
-        public static string FileConference { get => "fileConference"; }
-        public static string FileChanges { get => "fileChanges"; }
-        public static string FileProcesses { get => "fileProcesses"; }
+    //public static class ValuesCollection
+    //{
+    //    public static string Login { get => "login"; }
+    //    public static string Password { get => "pass"; }
+    //    public static string SilentMode { get => "silentMode"; }
+    //    public static string FileConference { get => "fileConference"; }
+    //    public static string FileChanges { get => "fileChanges"; }
+    //    public static string FileProcesses { get => "fileProcesses"; }
 
-        public static List<string> RegistryValues
-        {
-            get => new List<string>
-            {
-                Login,
-                Password,
-                SilentMode,
-                FileConference,
-                FileChanges,
-                FileProcesses
-            };
-        }
-    }
+    //    public static List<string> RegistryValues
+    //    {
+    //        get => new List<string>
+    //        {
+    //            Login,
+    //            Password,
+    //            SilentMode,
+    //            FileConference,
+    //            FileChanges,
+    //            FileProcesses
+    //        };
+    //    }
+    //}
 }

@@ -1,15 +1,15 @@
 ﻿using ESMA.Chromedriver;
+using ESMA.ViewModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using ESMA.ViewModel;
+using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace ESMA.DataLoaders
 {
@@ -24,7 +24,7 @@ namespace ESMA.DataLoaders
         }
         public override Task<BindingList<T>> LoadDataAsync<T>(IProgress<int> progress)
         {
-            return Task.Run(() => 
+            return Task.Run(() =>
             {
                 _startDate = IData.StartDateValue;
                 _endDate = IData.EndDateValue;
@@ -219,13 +219,13 @@ namespace ESMA.DataLoaders
             if ((_startDate != DateTime.MinValue && _endDate != DateTime.MinValue) || !(_startDate == _endDate))
             {
                 string[] days = { _startDate.ToString("dd"), _endDate.ToString("dd") };
-                string[] months = { _startDate.ToString("MM"), _endDate.ToString("MM")};
+                string[] months = { _startDate.ToString("MM"), _endDate.ToString("MM") };
 
                 for (int i = 0; i < fillCalendar.Length; i++)
                 {
                     webDriver.FindElement(By.XPath(fillCalendar[i])).Click();
                     webDriver.FindElement(By.XPath("//span[@id='spanMonth']")).Click();
-                    webDriver.FindElement(By.XPath($"//td[@id='m{int.Parse(months[i])-1}']")).Click();
+                    webDriver.FindElement(By.XPath($"//td[@id='m{int.Parse(months[i]) - 1}']")).Click();
                     webDriver.FindElement(By.XPath($"//a[@href='javascript:objdCalendar.dateSelected={int.Parse(days[i])};objdCalendar.selDate();']")).Click();
                 }
             }
@@ -240,131 +240,5 @@ namespace ESMA.DataLoaders
 
             webDriver.FindElement(By.XPath("//a[@href=\"javascript:var p_id='5498';ch_font(p_id);document.WHERE_PLAN.OBJL_ID.value=p_id;show_plans(6536,2);;\"]")).Click();
         }
-    }
-    public class ChangesLoader : ChromeController
-    {
-        public override BindingList<T> LoadData<T>(IProgress<int> progress)
-        {
-            throw new NotImplementedException();
-        }
-        public override Task<BindingList<T>> LoadDataAsync<T>(IProgress<int> progress)
-        {
-            return Task.Run(() => 
-            {
-                try
-                {
-
-                    LoginWindow();
-                    progress.Report(10);
-
-                    //changeframe
-                    webDriver.SwitchTo().Frame("frame2");
-
-                    Thread.Sleep(750);
-
-                    webDriver.FindElement(By.XPath("//*[@id=\"img_homes\"]")).Click();
-                    //webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
-                    webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
-                    webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
-                    webDriver.SwitchTo().Frame("main_frame");
-
-                    Thread.Sleep(500);
-                    progress.Report(25);
-
-                    var table = LoadLrpTable("ЛР ОР") ?? throw new Exception("Ошибка, таблица не заполнена");
-
-                    var toLoad = new List<Changes>();
-                    for (int i = 0; i < table[0].Count; i++)
-                    {
-                        toLoad.Add(new Changes
-                        {
-                            IdChanges = int.Parse(table[0][i]),
-                            C_Description = $"{table[2][i]}:{table[1][i]}",
-                            C_TimeStart = DateTime.Parse("00:00"),
-                            C_TimeEnd = DateTime.Parse("00:00"),
-                            C_Names = new ObservableCollection<string>(NamesArray)
-                        }); ;
-                    }
-                    progress.Report(75);
-
-                    progress.Report(100);
-                    webDriver?.Quit();
-                    progress.Report(0);
-                    return new BindingList<T>((IList<T>)toLoad.OrderBy(x => x.IdChanges).ToList());
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show($"{e}", e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
-                    webDriver?.Quit();
-                    return null;
-                }
-            });
-        }
-    }
-    public class ProcessLoader : ChromeController
-    {
-        public override BindingList<T> LoadData<T>(IProgress<int> progress)
-        {
-            throw new NotImplementedException();
-        }
-        public override Task<BindingList<T>> LoadDataAsync<T>(IProgress<int> progress)
-        {
-            return Task.Run(() =>
-            {
-                try
-                {
-                    LoginWindow();
-                    progress.Report(33);
-
-                    //changeframe
-                    webDriver.SwitchTo().Frame("frame2");
-
-                    Thread.Sleep(750);
-
-                    webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
-                    webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
-                    webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
-                    webDriver.SwitchTo().Frame("main_frame");
-
-                    var table = LoadLrpTable("ЛР ГТП");
-                    Thread.Sleep(500);
-                    progress.Report(67);
-
-                    var toLoad = new List<Process>();
-
-                    for (int i = 0; i < table[0].Count; i++)
-                    {
-                        toLoad.Add(new Process
-                        {
-                            IdProcess = int.Parse(table[0][i]),
-                            P_Description = table[1][i],
-                            P_TimeStart = DateTime.Parse("00:00"),
-                            P_Event = table[2][i],
-                            P_Names = new ObservableCollection<string>(NamesArray)
-                        });
-                    }
-
-                    Thread.Sleep(500);
-                    progress.Report(100);
-                    webDriver?.Quit();
-                    progress.Report(0);
-                    return new BindingList<T>((IList<T>)toLoad.OrderBy(x => x.IdProcess).ToList());
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show($"{e}", e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
-                    webDriver?.Quit();
-                    return null;
-                }
-            });
-        }
-    }
-    public partial class VCLoader : ChromeController
-    {
-        //public override void Test()
-        //{
-        //    TestThread();
-        //    webDriver.Navigate().GoToUrl("https://google.com");
-        //}
     }
 }

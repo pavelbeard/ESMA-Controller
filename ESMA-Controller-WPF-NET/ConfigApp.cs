@@ -34,7 +34,12 @@ namespace ESMA
         private static readonly string configurationFilePath = Path.Combine(Environment.CurrentDirectory, "Configuration.json");
         private static readonly string initialDirectory = Path.Combine(Environment.CurrentDirectory, "Tasks");
         private static readonly string empList = Path.Combine(Environment.CurrentDirectory, "EmpList.txt");
+        private static readonly string fullEmpList = Path.Combine(Environment.CurrentDirectory, "FullEmpList.txt");
 
+        public static string FullEmpListFile
+        {
+            get => File.Exists(fullEmpList) ? fullEmpList : "null";
+        }
         public static string EmpListFile
         {
             get => File.Exists(empList) ? empList : "null";

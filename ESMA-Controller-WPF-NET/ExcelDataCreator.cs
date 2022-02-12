@@ -1,14 +1,10 @@
-﻿using ESMA.ViewModel;
-using Microsoft.Win32;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ESMA
 {
@@ -21,24 +17,43 @@ namespace ESMA
             reportFolderPath = Directory.CreateDirectory(ConfigData.ReportsFolderPath).FullName;
         }
 
-        private static Dictionary<string, string> EmpsList
-        {
-            get => new()
-            {
-                ["Достойнова О.Г."] = "Достойнова Ольга Геннадьевна",
-                ["Пчелкина Ю.М."] = "Пчелкина Юлия Михайловна",
-                ["Жаворонкина Н.В."] = "Жаворонкина Наталья Владимировна",
-                ["Носкина Е.А."] = "Носкина Елена Александровна",
-                ["Жданова Н.В."] = "Жданова Наталия Владимировна",
-                ["Васильева И.А."] = "Васильева Ирина Анатольевна",
-                ["Жукова Ю.М."] = "Жукова Юлия Михайловна",
-                ["Кутакова Н.М."] = "Кутакова Наталья Михайловна",
-                ["Степачева И.Н."] = "Степачева Ирина Николаевна",
-                ["Глубокова Е.Н."] = "Глубокова Елена Николаевна",
-                ["Бородин П.А."] = "Бородин Павел Андреевич",
-                ["Хромов Д.А."] = "Хромов Даниил Андреевич"
-            };
+        private static Dictionary<string, string> EmpsList = FillEmpsList();
+        //{
+        //    get => new()
+        //    {
+                
+        //        ["Достойнова О.Г."] = "Достойнова Ольга Геннадьевна",
+        //        ["Пчелкина Ю.М."] = "Пчелкина Юлия Михайловна",
+        //        ["Жаворонкина Н.В."] = "Жаворонкина Наталья Владимировна",
+        //        ["Носкина Е.А."] = "Носкина Елена Александровна",
+        //        ["Жданова Н.В."] = "Жданова Наталия Владимировна",
+        //        ["Васильева И.А."] = "Васильева Ирина Анатольевна",
+        //        ["Жукова Ю.М."] = "Жукова Юлия Михайловна",
+        //        ["Кутакова Н.М."] = "Кутакова Наталья Михайловна",
+        //        ["Степачева И.Н."] = "Степачева Ирина Николаевна",
+        //        ["Глубокова Е.Н."] = "Глубокова Елена Николаевна",
+        //        ["Бородин П.А."] = "Бородин Павел Андреевич",
+        //        ["Хромов Д.А."] = "Хромов Даниил Андреевич"
+        //    };
 
+        //}
+
+        private static Dictionary<string, string> FillEmpsList()
+        {
+
+            var empListArray = File.ReadAllLines(ConfigData.EmpListFile);
+            var fullEmpListArray = File.ReadAllLines(ConfigData.FullEmpListFile);
+
+            int dictionaryLength = empListArray.Length;
+
+            var dictionary = new Dictionary<string, string>();
+
+            for (int i = 0; i < dictionaryLength; i++)
+            {
+                dictionary.Add(empListArray[i], fullEmpListArray[i]);
+            }
+
+            return dictionary;
         }
 
         public static void NewReport(ReportData reportData)
