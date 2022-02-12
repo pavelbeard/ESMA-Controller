@@ -33,16 +33,11 @@ namespace ESMA
         private static readonly string namesListFile = Path.Combine(Environment.CurrentDirectory, "NamesList.txt");
         private static readonly string configurationFilePath = Path.Combine(Environment.CurrentDirectory, "Configuration.json");
         private static readonly string initialDirectory = Path.Combine(Environment.CurrentDirectory, "Tasks");
-        private static readonly string empList = Path.Combine(Environment.CurrentDirectory, "EmpList.txt");
-        private static readonly string fullEmpList = Path.Combine(Environment.CurrentDirectory, "FullEmpList.txt");
+        private static readonly string empListJSON = Path.Combine(Environment.CurrentDirectory, "EmpList.json");
 
-        public static string FullEmpListFile
+        public static string EmpListFileJSON
         {
-            get => File.Exists(fullEmpList) ? fullEmpList : "null";
-        }
-        public static string EmpListFile
-        {
-            get => File.Exists(empList) ? empList : "null";
+            get => File.Exists(empListJSON) ? empListJSON: "null";
         }
         public static string ConfigurationFilePath
         {

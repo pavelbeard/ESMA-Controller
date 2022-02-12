@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -52,10 +53,17 @@ namespace ESMA.DataCollections
 
     public class ReportNames : ObservableCollection<string>
     {
-        private string[] empList = File.ReadAllLines(ConfigData.EmpListFile);
         public ReportNames()
         {
-            foreach (string emp in empList) Add(emp);
+            var file = File.ReadAllText(ConfigData.EmpListFileJSON);
+            var lists = new
+            {
+                FullNameList = new List<string>(),
+                ShortNameList = new List<string>()
+            };
+            var listsDeserialized = JsonConvert.DeserializeAnonymousType(file, lists);
+
+            foreach (string name in listsDeserialized.ShortNameList) Add(name);
         }
     }
 

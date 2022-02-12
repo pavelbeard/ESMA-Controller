@@ -44,8 +44,15 @@ namespace ESMA
             var refrEmp = RefrBox.SelectedItem;
             var boss = BossBox.SelectedItem;
 
-            js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, string> 
-            { ["InNight"] = inNight.ToString(), ["SNight"] = sNight.ToString(), ["RefrEmp"] = refrEmp.ToString(), ["Boss"] = boss.ToString() });
+            try
+            {
+                js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, string>
+                { ["InNight"] = inNight.ToString(), ["SNight"] = sNight.ToString(), ["RefrEmp"] = refrEmp.ToString(), ["Boss"] = boss.ToString() });
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Нужно заполнить пустые поля");
+            }
         }
     }
 }

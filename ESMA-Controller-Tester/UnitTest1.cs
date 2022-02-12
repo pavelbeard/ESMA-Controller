@@ -1,5 +1,6 @@
 using ESMA.Chromedriver;
 using ESMA.Controllers;
+using ESMA.ExcelData;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
@@ -27,6 +28,14 @@ namespace ESMA_Controller_Tester
             //var t1 = VideoConferenceController.RunAsync(cts.Token, 3, 4, 0).IsCompleted;
 
             //Assert.AreEqual(true, VideoConferenceController.RunAsync(cts.Token, 3, 4, 0).Result);
+        }
+
+        [Test]
+        public void TestLengthCheck()
+        {
+            EmployesList el = new();
+
+            Assert.AreEqual(13, el.Count);
         }
     }
 }

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Text.Json;
+using ESMA.ExcelData;
+using System.Threading.Tasks;
+using System.Text.Unicode;
 
 namespace ESMA
 {
@@ -18,39 +22,17 @@ namespace ESMA
         }
 
         private static Dictionary<string, string> EmpsList = FillEmpsList();
-        //{
-        //    get => new()
-        //    {
-                
-        //        ["Достойнова О.Г."] = "Достойнова Ольга Геннадьевна",
-        //        ["Пчелкина Ю.М."] = "Пчелкина Юлия Михайловна",
-        //        ["Жаворонкина Н.В."] = "Жаворонкина Наталья Владимировна",
-        //        ["Носкина Е.А."] = "Носкина Елена Александровна",
-        //        ["Жданова Н.В."] = "Жданова Наталия Владимировна",
-        //        ["Васильева И.А."] = "Васильева Ирина Анатольевна",
-        //        ["Жукова Ю.М."] = "Жукова Юлия Михайловна",
-        //        ["Кутакова Н.М."] = "Кутакова Наталья Михайловна",
-        //        ["Степачева И.Н."] = "Степачева Ирина Николаевна",
-        //        ["Глубокова Е.Н."] = "Глубокова Елена Николаевна",
-        //        ["Бородин П.А."] = "Бородин Павел Андреевич",
-        //        ["Хромов Д.А."] = "Хромов Даниил Андреевич"
-        //    };
-
-        //}
 
         private static Dictionary<string, string> FillEmpsList()
         {
-
-            var empListArray = File.ReadAllLines(ConfigData.EmpListFile);
-            var fullEmpListArray = File.ReadAllLines(ConfigData.FullEmpListFile);
-
-            int dictionaryLength = empListArray.Length;
-
+            var file = File.ReadAllText(ConfigData.EmpListFileJSON);
+            var employesList = System.Text.Json.JsonSerializer.Deserialize<EmployesList>(file);
+            employesList.LengthCheck();
             var dictionary = new Dictionary<string, string>();
 
-            for (int i = 0; i < dictionaryLength; i++)
+            for (int i = 0; i < employesList.Count; i++)
             {
-                dictionary.Add(empListArray[i], fullEmpListArray[i]);
+                dictionary.Add(employesList.FullNameList[i], employesList.ShortNameList[i]);
             }
 
             return dictionary;
@@ -180,12 +162,5 @@ namespace ESMA
                 MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-    }
-
-    public class ReportData
-    {
-        public static ReportData Report { get; set; }
-        public List<string> Emps { get; set; } = new();
-        public List<string> Lrps { get; set; } = new();
     }
 }
