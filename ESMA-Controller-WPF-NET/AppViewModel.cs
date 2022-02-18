@@ -47,6 +47,7 @@ namespace ESMA.ViewModel
                 VC_TimeEnd = DateTime.Parse("00:00"),
                 VC_Job = "null",
                 VC_Names = new ObservableCollection<string>(ConfigData.NamesList),
+                VC_Names_For_Content = new ObservableCollection<string>(ConfigData.NamesList),
                 OperPersonal = true,
                 CloseConference = true
             };
@@ -779,8 +780,12 @@ namespace ESMA.ViewModel
                     switch (MwCurrentTab)
                     {
                         case 0:
-                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
+                            {
+                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
                                 new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            }
                             break;
                         case 1:
                             IData.Window.changesList[IData.Window.Changes.SelectedIndex].C_Names =
@@ -791,6 +796,29 @@ namespace ESMA.ViewModel
                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         default:
+                            break;
+                    }
+                }
+            });
+        }
+        public RelayCommand ChangeNamesNew
+        {
+            get => new RelayCommand(obj =>
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Открыть ФИО работников",
+                    Filter = "Открыть .txt файл|*.txt",
+                    RestoreDirectory = true
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    switch (MwCurrentTab)
+                    {
+                        case 0:
+                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                     }
                 }
@@ -1061,6 +1089,7 @@ namespace ESMA.ViewModel
     public class VideoConference : INotifyPropertyChanged
     {
         private ObservableCollection<string> vc_Names;
+        private ObservableCollection<string> vc_Names_for_content;
         private string vc_Status;
 
         public int IdConference { get; set; }
@@ -1077,6 +1106,15 @@ namespace ESMA.ViewModel
             {
                 vc_Names = value;
                 OnPropertyChanged("VC_Names");
+            }
+        }
+        public ObservableCollection<string> VC_Names_For_Content
+        {
+            get => vc_Names_for_content;
+            set
+            {
+                vc_Names_for_content = value;
+                OnPropertyChanged("VC_Names_For_Content");
             }
         }
         public bool CloseConference { get; set; }

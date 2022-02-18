@@ -17,5 +17,6 @@ namespace ESMA
         public static int CurrentJ { get; set; }
         public static int CurrentTime { get; set; }
         public static object CurrentData { get; set; }
+        public static int CurrentK { get; internal set; }
     }
 }

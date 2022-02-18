@@ -105,7 +105,7 @@ namespace ESMA
                     for (int row = 3; row <= numOfRows; row++)
                     {
                         int i = row - 3;
-                        ews.Cells[$"B{row}:B{row}"].Value = EmpsList.Keys.ToList()[i]; // Фамилии
+                        ews.Cells[$"B{row}:B{row}"].Value = EmpsList.Values.ToList()[i]; // Фамилии
                     }
                     //Заполнение ячеек данными
                     ews.SelectedRange["C3:C14"].Value = "выходной";
@@ -118,17 +118,17 @@ namespace ESMA
                     {
                         for (int row = 3; row <= numOfRows; row++)
                         {
-                            if (EmpsList.Keys.ToList()[row - 3] == Convert.ToString(t["InNight"]))
+                            if (EmpsList.Values.ToList()[row - 3] == Convert.ToString(t["InNight"]))
                             {
                                 ews.SelectedRange[$"C{row}:C{row}"].Value = "в ночь";
                             }
-                            if (EmpsList.Keys.ToList()[row - 3] == Convert.ToString(t["SNight"]))
+                            if (EmpsList.Values.ToList()[row - 3] == Convert.ToString(t["SNight"]))
                             {
                                 ews.SelectedRange[$"C{row}:C{row}"].Value = "с ночи";
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
                                 ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4";
                             }
-                            if (EmpsList.Values.ToList()[row - 3] == reportData.Emps[empsCounter])
+                            if (EmpsList.Keys.ToList()[row - 3] == reportData.Emps[empsCounter])
                             {
                                 ews.Row(row).Height = 25 * reportData.Lrps.Count;
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
