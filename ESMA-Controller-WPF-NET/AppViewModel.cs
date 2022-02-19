@@ -1,6 +1,7 @@
 ﻿using ESMA.ChangesCloser;
 using ESMA.Chromedriver;
 using ESMA.Controllers;
+using ESMA.DataCollections;
 using ESMA.DataLoaders;
 using ESMA.ExcelData;
 using Microsoft.Win32;
@@ -38,20 +39,38 @@ namespace ESMA.ViewModel
 
         private VideoConference AddConference
         {
-            get => new VideoConference
+            get
             {
-                IdConference = 0,
-                VC_Theme = "null",
-                VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
-                VC_TimeStart = DateTime.Parse("00:00"),
-                VC_TimeEnd = DateTime.Parse("00:00"),
-                VC_Job = "null",
-                VC_Names = new ObservableCollection<string>(ConfigData.NamesList),
-                VC_Names_For_Content = new ObservableCollection<string>(ConfigData.NamesList),
-                OperPersonal = true,
-                CloseConference = true,
-                Escort = false
-            };
+                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                string file = t["EmpListFile"];
+
+                var list = new EmpList(file);
+
+                var newList = new ObservableCollection<string>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].IsChecked)
+                    {
+                        newList.Add(list[i].Name);
+                    }
+                }
+
+                return new VideoConference
+                {
+                    IdConference = 0,
+                    VC_Theme = "null",
+                    VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
+                    VC_TimeStart = DateTime.Parse("00:00"),
+                    VC_TimeEnd = DateTime.Parse("00:00"),
+                    VC_Job = "null",
+                    VC_Names = newList,
+                    VC_Names_For_Content = newList,
+                    OperPersonal = true,
+                    CloseConference = true,
+                    Escort = false
+                };
+            }
         }
         private Changes AddChanges
         {
@@ -77,9 +96,9 @@ namespace ESMA.ViewModel
                 P_Names = new ObservableCollection<string>(ConfigData.NamesList)
             };
         }
-        private CTC AddCTC
+        private ChangesCreate AddCTC
         {
-            get => new CTC
+            get => new ChangesCreate
             {
                 IdCTC = 0,
                 CTC_Description = "null",
@@ -186,12 +205,12 @@ namespace ESMA.ViewModel
                             Password = t["Password"],
                             CurrentTableIndex = MwCurrentTab
                         };
-                        var ctcLoad = await cc.LoadDataAsync<CTC>(scanProgress);
+                        var ctcLoad = await cc.LoadDataAsync<ChangesCreate>(scanProgress);
                         if (ctcLoad != null)
                         {
                             foreach (var item in ctcLoad)
                             {
-                                IData.Window.ctcList.Add(item);
+                                IData.Window.chCreateList.Add(item);
                             }
                         }
                     }
@@ -235,7 +254,7 @@ namespace ESMA.ViewModel
                         0 => IData.Window?.videoList?.Count == 0 && check,
                         1 => IData.Window?.changesList?.Count == 0 && check,
                         2 => IData.Window?.processList?.Count == 0 && check,
-                        3 => IData.Window?.ctcList?.Count == 0 && check,
+                        3 => IData.Window?.chCreateList?.Count == 0 && check,
                         5 => IData.Window?.cceList?.Count == 0 && check,
                         _ => false,
                     };
@@ -253,7 +272,7 @@ namespace ESMA.ViewModel
                     IData.Window.videoList?.Clear();
                     IData.Window.changesList?.Clear();
                     IData.Window.processList?.Clear();
-                    IData.Window.ctcList?.Clear();
+                    IData.Window.chCreateList?.Clear();
                     IData.Window.cceList?.Clear();
                 }
                 var newTask = new NewTaskWindow
@@ -283,7 +302,7 @@ namespace ESMA.ViewModel
                             Conferences = new BindingList<VideoConference>(),
                             Changes = new BindingList<Changes>(),
                             Processes = new BindingList<Process>(),
-                            CTCs = new BindingList<CTC>(),
+                            CTCs = new BindingList<ChangesCreate>(),
                             ChangesCloserElement = new BindingList<ChangesCloserElement>()
                         }));
 
@@ -364,7 +383,7 @@ namespace ESMA.ViewModel
                         Conferences = IData.Window.videoList,
                         Changes = IData.Window.changesList,
                         Processes = IData.Window.processList,
-                        CTCs = IData.Window.ctcList,
+                        CTCs = IData.Window.chCreateList,
                         ChangesCloserElements = IData.Window.cceList
                     });
 
@@ -393,7 +412,7 @@ namespace ESMA.ViewModel
                                 Conferences = IData.Window.videoList,
                                 Changes = IData.Window.changesList,
                                 Processes = IData.Window.processList,
-                                CTSs = IData.Window.ctcList,
+                                CTSs = IData.Window.chCreateList,
                                 ChangesCloserElements = IData.Window.cceList
                             });
 
@@ -437,7 +456,7 @@ namespace ESMA.ViewModel
                     case 0: IData.Window.videoList.Add(AddConference); break;
                     case 1: IData.Window.changesList.Add(AddChanges); break;
                     case 2: IData.Window.processList.Add(AddProcess); break;
-                    case 3: IData.Window.ctcList.Add(AddCTC); break;
+                    case 3: IData.Window.chCreateList.Add(AddCTC); break;
                     case 4: IData.Window.pcList.Add(AddPC); break;
                     case 5: IData.Window.cceList.Add(new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" }); break;
                     default: break;
@@ -473,13 +492,13 @@ namespace ESMA.ViewModel
                                 IData.Window.processList.Insert(IData.Window.Process.SelectedIndex, AddProcess);
                             break;
                         case 3:
-                            if (IData.Window.ctcList.Count < 1)
-                                IData.Window.ctcList.Add(AddCTC);
+                            if (IData.Window.chCreateList.Count < 1)
+                                IData.Window.chCreateList.Add(AddCTC);
                             else
-                                IData.Window.ctcList.Insert(IData.Window.ChangesCreate.SelectedIndex, AddCTC);
+                                IData.Window.chCreateList.Insert(IData.Window.ChangesCreate.SelectedIndex, AddCTC);
                             break;
                         case 5:
-                            if (IData.Window.ctcList.Count < 1)
+                            if (IData.Window.chCreateList.Count < 1)
                                 IData.Window.cceList.Add(new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" });
                             else
                                 IData.Window.cceList.Insert(IData.Window.ChangesClose.SelectedIndex, new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" });
@@ -515,8 +534,8 @@ namespace ESMA.ViewModel
                             IData.Window.processList.RemoveAt(IData.Window.Process.SelectedIndex);
                         break;
                     case 3:
-                        if (IData.Window.ctcList.Count > 0)
-                            IData.Window.ctcList.RemoveAt(IData.Window.ChangesCreate.SelectedIndex);
+                        if (IData.Window.chCreateList.Count > 0)
+                            IData.Window.chCreateList.RemoveAt(IData.Window.ChangesCreate.SelectedIndex);
                         break;
                     case 5:
                         if (IData.Window.cceList.Count > 0)
@@ -535,7 +554,7 @@ namespace ESMA.ViewModel
                         0 => IData.Window?.videoList?.Count > 0,
                         1 => IData.Window?.changesList?.Count > 0,
                         2 => IData.Window?.processList?.Count > 0,
-                        3 => IData.Window?.ctcList?.Count > 0,
+                        3 => IData.Window?.chCreateList?.Count > 0,
                         5 => IData.Window?.cceList?.Count > 0,
                         _ => false,
                     };
@@ -605,7 +624,7 @@ namespace ESMA.ViewModel
                     }
                     if (MwCurrentTab == 3)
                     {
-                        IData.CTCs = IData.Window.ctcList;
+                        IData.CTCs = IData.Window.chCreateList;
                         ChangesCreatorController cc = new()
                         {
                             Login = t["Login"],
@@ -672,7 +691,7 @@ namespace ESMA.ViewModel
                     0 => IData.Window?.videoList?.Count > 0 && check,
                     1 => IData.Window?.changesList?.Count > 0 && check,
                     2 => IData.Window?.processList?.Count > 0 && check,
-                    3 => IData.Window?.ctcList?.Count > 0 && check,
+                    3 => IData.Window?.chCreateList?.Count > 0 && check,
                     4 => IData.Window?.pcList?.Count == 0,
                     5 => IData.Window?.cceList?.Count > 0 && check,
                     _ => false,
@@ -735,7 +754,7 @@ namespace ESMA.ViewModel
                         ClearTableInfo("Таблица \"ГТП\"");
                         break;
                     case 3:
-                        IData.Window.ctcList?.Clear();
+                        IData.Window.chCreateList?.Clear();
                         MessageBox.Show("Таблица \"Создание ЗИ\" очищена", "", MessageBoxButton.OK, MessageBoxImage.Information);
                         break;
                     case 4:
@@ -758,7 +777,7 @@ namespace ESMA.ViewModel
                     0 => IData.Window?.videoList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     1 => IData.Window?.changesList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     2 => IData.Window?.processList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
-                    3 => IData.Window?.ctcList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
+                    3 => IData.Window?.chCreateList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     4 => IData.Window?.pcList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     5 => IData.Window?.cceList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     _ => false,
@@ -1118,7 +1137,7 @@ namespace ESMA.ViewModel
         }
     }
 
-    public class CTC : INotifyPropertyChanged
+    public class ChangesCreate : INotifyPropertyChanged
     {
         private string ctc_Status;
 

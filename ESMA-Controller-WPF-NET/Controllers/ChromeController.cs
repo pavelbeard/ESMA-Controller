@@ -9,6 +9,7 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -26,8 +27,7 @@ namespace ESMA.Chromedriver
         public string Login { get; set; }
         public string Password { get; set; }
         public int CurrentTableIndex { get; set; }
-
-        protected string[] NamesArray { get; set; }
+        protected ObservableCollection<string> NamesArray { get; set; }
 
         protected WebDriverWait webDriverWait;
         protected IWebDriver webDriver;
@@ -36,12 +36,25 @@ namespace ESMA.Chromedriver
 
         public ChromeController()
         {
-            NamesArray = File.ReadAllLines(ConfigData.NamesListFile);
+            dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+            string file = t["EmpListFile"];
+
+            var list = new EmpList(file);
+
+            var newList = new ObservableCollection<string>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsChecked)
+                {
+                    newList.Add(list[i].Name);
+                }
+            }
+
+            NamesArray = newList;
 
             cds = ChromeDriverService.CreateDefaultService();
             chromeOptions = new ChromeOptions();
-
-            dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
 
             if (Convert.ToBoolean(t["SilentMode"]))
             {

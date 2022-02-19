@@ -44,10 +44,10 @@ namespace ESMA
 
                     var table = LoadLrpTable("ЛР ОР") ?? throw new Exception("Ошибка, таблица не заполнена");
 
-                    var toLoad = new List<CTC>();
+                    var toLoad = new List<ChangesCreate>();
                     for (int i = 0; i < table[0].Count; i++)
                     {
-                        toLoad.Add(new CTC
+                        toLoad.Add(new ChangesCreate
                         {
                             IdCTC = int.Parse(table[0][i]),
                             CTC_Description = $"{table[2][i]}:{table[1][i]}",

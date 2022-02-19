@@ -21,7 +21,7 @@ namespace ESMA
         public static BindingList<VideoConference> VideoConferences { get; set; }
         public static BindingList<Changes> Changes { get; set; }
         public static BindingList<Process> Processes { get; set; }
-        public static BindingList<CTC> CTCs { get; set; }
+        public static BindingList<ChangesCreate> CTCs { get; set; }
         public static BindingList<PlanCoordinator> PCs { get; set; }
         public static BindingList<ChangesCloserElement> ChangesCloserElements { get; set; }
     }
