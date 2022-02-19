@@ -825,33 +825,7 @@ namespace ESMA.ViewModel
                 }
             });
         }
-        public RelayCommand ChangePrimNames
-        {
-            get => new RelayCommand(async obj =>
-            {
-                System.Diagnostics.Process p = null;
-
-                if (Directory.Exists(@"C:\Program Files\Notepad++") && ConfigData.NamesListFile != "null")
-                    p = System.Diagnostics.Process.Start(@"C:\Program Files\Notepad++\notepad++.exe", ConfigData.NamesListFile);
-                else
-                    p = System.Diagnostics.Process.Start("notepad.exe", ConfigData.NamesListFile);
-
-                await Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        if (p.HasExited)
-                        {
-                            IData.CsWindow.Dispatcher.Invoke(() =>
-                            {
-                                IData.CsWindow.namesBox.ItemsSource = new ObservableCollection<string>(ConfigData.NamesList);
-                            });
-                            break;
-                        }
-                    }
-                });
-            });
-        }
+        //change prim names
         public RelayCommand OpenConferenceSettings
         {
             get => new RelayCommand(obj =>
@@ -865,61 +839,10 @@ namespace ESMA.ViewModel
             },
             obj => IData.Window?.modulesList.IsVisible ?? false);
         }
-        public RelayCommand Accept
-        {
-            get => new RelayCommand(obj =>
-            {
-                if ((IData.CsWindow.StartDate.Text != "" && IData.CsWindow.EndDate.Text != "")
-                || (IData.CsWindow.StartDate.Text != "" || IData.CsWindow.EndDate.Text != ""))
-                {
-                    IData.StartDateValue = DateTime.Parse(IData.CsWindow.StartDate.Text);
-                    IData.EndDateValue = DateTime.Parse(IData.CsWindow.EndDate.Text);
-                    SettingsInfo("Применено");
-                }
-                else
-                {
-                    SettingsInfo("Пусто", true);
-                }
-            });
-        }
-        public RelayCommand ResetTime
-        {
-            get => new RelayCommand(obj =>
-            {
-                IData.CsWindow.StartDate.Text = DateTime.Now.ToString();
-                IData.CsWindow.EndDate.Text = DateTime.Now.ToString();
-                IData.StartDateValue = DateTime.Parse(IData.CsWindow.StartDate.Text);
-                IData.EndDateValue = DateTime.Parse(IData.CsWindow.EndDate.Text);
-                SettingsInfo("Время сброшено");
-            });
-        }
-        public RelayCommand Authorization
-        {
-            get => new RelayCommand(async obj =>
-            {
-                string login = IData.CsWindow.loginField.Text;
-                string password = IData.CsWindow.passwordField.Password;
-                if (login != "" && password != "")
-                {
-                    await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string> { ["Login"] = login, ["Password"] = password });
-                    MessageBox.Show("Авторизация завершена", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Пустые поля", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
-            });
-        }
-        public RelayCommand ResetAuthorizationData
-        {
-            get => new RelayCommand(async obj =>
-            {
-                await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string> { ["Login"] = default, ["Password"] = default });
-                IData.CsWindow.loginField.Text = default;
-                IData.CsWindow.passwordField.Password = default;
-            });
-        }
+        //accept here
+        //reset time here
+        //auth here
+        //reset auth here
         public RelayCommand ResetData
         {
             get => new RelayCommand(async obj =>
@@ -927,14 +850,7 @@ namespace ESMA.ViewModel
                 //await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, T>)
             });
         }
-        public RelayCommand SilentMode
-        {
-            get => new RelayCommand(obj =>
-            {
-                bool t = (bool)IData.CsWindow.SilentModeCheckBox.IsChecked;
-                js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, bool> { ["SilentMode"] = t });
-            });
-        }
+        //silent mode
         public RelayCommand BrowseFolder
         {
             get => new RelayCommand(obj =>
@@ -1022,16 +938,7 @@ namespace ESMA.ViewModel
                 IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = "");
             });
         }
-        public static async void SettingsInfo(string info, bool @void = false)
-        {
-            if (@void)
-            {
-                SystemSounds.Hand.Play();
-            }
-            IData.CsWindow.infoLabel.Content = info;
-            await Task.Delay(4000);
-            IData.CsWindow.infoLabel.Content = "";
-        }
+        //settings info
         public static async void MainWindowInfo(string info, bool @void = false)
         {
             if (@void)

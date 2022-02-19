@@ -17,12 +17,15 @@ namespace ESMA
     public partial class ConferenceSettingsWindow : Window
     {
         private IJsonService js;
+        private EmpList List { get; set; }
+        private string Config { get; set; }
+        private string Switch { get; set; }
 
         public ConferenceSettingsWindow()
         {
             InitializeComponent();
             IData.CsWindow = this;
-            namesBox.ItemsSource = new ObservableCollection<string>(ConfigData.NamesList);
+            //namesBox.ItemsSource = new ObservableCollection<string>(ConfigData.NamesList);           
 
             dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
             loginField.Text = t["Login"];
@@ -32,8 +35,31 @@ namespace ESMA
             SNightBox.Text = t["SNight"];
             RefrBox.Text = t["RefrEmp"];
             BossBox.Text = t["Boss"];
+            //проверка на отсутствие файла
+            if (t["EmpListFile"] != null)
+            {
+                Config = t["EmpListFile"];
+                //если строка из конфига будет равна дефолтной
+                if (t["EmpListFile"] == ConfigData.NamesListFileJSON && t["SwitchFile"] == "0")
+                {
+                    ChangeButton.Content = "Поменять на список для накрутки\n" +
+                                           "часов на конференции НС/РЦС";
+                }
+                else
+                {
+                    ChangeButton.Content = "Поменять на обычный\nсписок работников";
+                }
+            }
+            else
+            {
+                Config = ConfigData.NamesListFileJSON;
+            }
+            
+            //new names list
+            namesBox.ItemsSource = List = new EmpList(Config);
 
-            DataContext = new AppViewModel(new JsonIO());
+            DataContext = new AppViewModelSettings(new JsonIO(), List, this);
+            
         }
 
         private void window_Closed(object sender, EventArgs e)
@@ -46,8 +72,31 @@ namespace ESMA
 
             try
             {
+                var lists = new JSONEmpCollection();
+
+                for (int i = 0; i < List.Count; i++)
+                {
+                    lists.NamesList.Add(List[i].Name);
+                    lists.CheckList.Add(List[i].IsChecked);
+                }
+
+                var str = JsonConvert.SerializeObject(lists);
+                File.WriteAllText(Config, str);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex}");
+            }
+
+            try
+            {
                 js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, string>
-                { ["InNight"] = inNight.ToString(), ["SNight"] = sNight.ToString(), ["RefrEmp"] = refrEmp.ToString(), ["Boss"] = boss.ToString() });
+                { 
+                    ["InNight"] = inNight.ToString(), 
+                    ["SNight"] = sNight.ToString(), 
+                    ["RefrEmp"] = refrEmp.ToString(), 
+                    ["Boss"] = boss.ToString()
+                });;
             }
             catch (Exception)
             {

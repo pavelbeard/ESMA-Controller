@@ -34,7 +34,17 @@ namespace ESMA
         private static readonly string configurationFilePath = Path.Combine(Environment.CurrentDirectory, "Configuration.json");
         private static readonly string initialDirectory = Path.Combine(Environment.CurrentDirectory, "Tasks");
         private static readonly string empListJSON = Path.Combine(Environment.CurrentDirectory, "EmpList.json");
+        private static readonly string namesListFileJSON = Path.Combine(Environment.CurrentDirectory, "NamesList.json");
+        private static readonly string boostListFileJSON = Path.Combine(Environment.CurrentDirectory, "BoostList.json");
 
+        public static string BoostListFileJSON
+        {
+            get => File.Exists(boostListFileJSON) ? boostListFileJSON : "null";
+        }
+        public static string NamesListFileJSON
+        {
+            get => File.Exists(namesListFileJSON) ? namesListFileJSON : "null";
+        }
         public static string EmpListFileJSON
         {
             get => File.Exists(empListJSON) ? empListJSON: "null";

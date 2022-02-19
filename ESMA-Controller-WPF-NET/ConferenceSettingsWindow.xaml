@@ -100,10 +100,20 @@
                 Rows="2" 
                 Margin="10">
                 <ListBox 
+                    ItemsSource="{Binding List}"
                     x:Name="namesBox"
-                    Margin="5,5,5,-5"/>
+                    Margin="5,5,5,-5">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox 
+                                IsChecked="{Binding IsChecked}" 
+                                Content="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <Button 
-                    Content="Изменить"
+                    x:Name="ChangeButton"
+                    Content="Поменять на список для накрутки&#10;часов на конференции НС/РЦС"
                     Command="{Binding ChangePrimNames}"
                     Margin="5,15,5,5"
                     Style="{StaticResource ButtonStyle}"/>
@@ -157,19 +167,6 @@
                     x:Name="RefrBox"
                     Margin="20,10,10,10"
                     ItemsSource="{StaticResource repNames}" Height="84"/>
-                <!--<CheckBox x:Name="DebugBox"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          Command="{Binding DebugHours}"/>-->
-                <!--<Button
-                    IsEnabled="False"
-                    Content="Да" 
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Height="45"
-                    Width="90"
-                    Command="{Binding ResetData}"
-                    Style="{StaticResource ButtonStyle}"/>-->
             </UniformGrid>
         </GroupBox>
         <GroupBox

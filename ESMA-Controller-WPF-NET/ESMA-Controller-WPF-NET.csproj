@@ -82,6 +82,12 @@ v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
     <None Update="EmpList.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="BoostList.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NamesList.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="vsign.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
