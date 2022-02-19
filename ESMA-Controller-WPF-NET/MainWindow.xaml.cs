@@ -159,12 +159,12 @@ namespace ESMA
             var processes = System.Diagnostics.Process.GetProcessesByName("EXCEL.EXE");
             foreach (var p in processes)
             {
-                p.Close();
+                p?.Close();
             }
             processes = System.Diagnostics.Process.GetProcessesByName("chromedriver.exe");
             foreach (var p in processes)
             {
-                p.Close();
+                p?.Close();
             }
         }
 
