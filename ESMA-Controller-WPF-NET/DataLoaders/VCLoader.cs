@@ -169,7 +169,8 @@ namespace ESMA.DataLoaders
                                 VC_Names = new ObservableCollection<string>(NamesArray),
                                 VC_Names_For_Content = new ObservableCollection<string>(NamesArray),
                                 OperPersonal = true,
-                                CloseConference = true
+                                CloseConference = true,
+                                Escort = false
                             });
                         }
 

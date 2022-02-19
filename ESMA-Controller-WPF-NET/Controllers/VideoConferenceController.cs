@@ -373,16 +373,19 @@ namespace ESMA.Controllers
                                     progress.Report(progressPercentage);
                                 }
                                 j = 0;
-                                //close oper.personal
-                                webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
-                                //content
-                                //for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
-                                //{
-                                //    token.ThrowIfCancellationRequested();
+                                if (IData.VideoConferences[i].Escort)
+                                {
+                                    //close oper.personal
+                                    webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
+                                    //content
+                                    for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
+                                    {
+                                        token.ThrowIfCancellationRequested();
 
-                                //    Escort(i, k);
+                                        Escort(i, k);
 
-                                //}
+                                    }
+                                }
                             }
                             else if (allOperPersonalNeeded)
                             {

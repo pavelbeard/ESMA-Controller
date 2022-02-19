@@ -49,7 +49,8 @@ namespace ESMA.ViewModel
                 VC_Names = new ObservableCollection<string>(ConfigData.NamesList),
                 VC_Names_For_Content = new ObservableCollection<string>(ConfigData.NamesList),
                 OperPersonal = true,
-                CloseConference = true
+                CloseConference = true,
+                Escort = false
             };
         }
         private Changes AddChanges
@@ -1117,6 +1118,7 @@ namespace ESMA.ViewModel
                 OnPropertyChanged("VC_Names_For_Content");
             }
         }
+        public bool Escort { get; set; }
         public bool CloseConference { get; set; }
         public string CloseCode { get; set; }
         public string VC_Status

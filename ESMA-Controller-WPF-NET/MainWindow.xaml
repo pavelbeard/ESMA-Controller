@@ -429,6 +429,10 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridCheckBoxColumn 
+                                Header="Внести&#10;персонал по сопровождению?" 
+                                Binding="{Binding Escort}" 
+                                CanUserSort="False"/>
+                            <DataGridCheckBoxColumn 
                                 Header="Закрыть&#10;совещание?" 
                                 Binding="{Binding CloseConference}" 
                                 CanUserSort="False"/>
