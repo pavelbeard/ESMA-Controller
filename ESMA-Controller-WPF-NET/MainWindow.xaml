@@ -409,6 +409,25 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTemplateColumn 
+                                Header="ФИО&#10;для сопровождения">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander 
+                                            Header="Список сотрудников">
+                                            <StackPanel>
+                                                <Button 
+                                                    Content="Изменить ФИО&#10;для сопровождения"
+                                                    DataContext="{StaticResource ViewModel}"
+                                                    Command="{Binding ChangeNamesNew}"/>
+                                                <ListBox 
+                                                        ItemsSource="{Binding VC_Names_For_Content}"
+                                                        Height="100"/>
+                                            </StackPanel>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridCheckBoxColumn 
                                 Header="Закрыть&#10;совещание?" 
                                 Binding="{Binding CloseConference}" 

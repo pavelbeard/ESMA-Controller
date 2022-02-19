@@ -167,6 +167,7 @@ namespace ESMA.DataLoaders
                                 VC_TimeEnd = CmpDayHour(table[i][3], table[i][1]),
                                 VC_Theme = table[i][4],
                                 VC_Names = new ObservableCollection<string>(NamesArray),
+                                VC_Names_For_Content = new ObservableCollection<string>(NamesArray),
                                 OperPersonal = true,
                                 CloseConference = true
                             });

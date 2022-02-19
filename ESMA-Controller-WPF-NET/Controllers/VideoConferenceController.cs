@@ -19,159 +19,11 @@ namespace ESMA.Controllers
         private readonly DateTime _startDate = IData.StartDateValue;
         private readonly DateTime _endDate = IData.EndDateValue;
 
-        public Task TestProgressBar(CancellationToken token, IProgress<double> progress)
-        {
-            return Task.Run(() =>
-            {
-                int attempts = 0;
-                int time = 0;
-                bool allOperPersonalNeeded = IData.VideoConferences.All(x => x.OperPersonal == false);
-                var progressPercentage = 0.0;
-
-                IEnumerable<int> PercentageMax()
-                {
-                    if (!allOperPersonalNeeded)
-                    {
-                        foreach (var c in IData.VideoConferences.Where(x => x.OperPersonal == true))
-                        {
-                            yield return c.VC_Names.Count;
-                        }
-                    }
-                    else
-                    {
-                        yield return IData.VideoConferences.Count;
-                    }
-                }
-
-                double total = PercentageMax().Sum();
-
-                int i = 0;
-                int j = 0;
-
-                if (StopTask.PauseRequest)
-                {
-                    i = StopTask.CurrentI;
-                    j = StopTask.CurrentJ;
-                    time = StopTask.CurrentTime;
-                    progressPercentage = (double)StopTask.CurrentData;
-                    progress.Report((double)StopTask.CurrentData);
-                    StopTask.PauseRequest = token.IsCancellationRequested;
-                }
-
-                void StartBrowser(int index)
-                {
-                    IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = $"index = {index}");
-                    Thread.Sleep(1000);
-                }
-                void ChangeFrame()
-                {
-                    Thread.Sleep(1000);
-                }
-                void Work(int index, int innerIndex)
-                {
-                    IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = $"index = {index}, innerIndex = {j}");
-                    Thread.Sleep(1000);
-                }
-                void CloseConference(int index)
-                {
-                    IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = $"index = {index}");
-                    Thread.Sleep(1000);
-                }
-
-                for (; i < IData.VideoConferences.Count; i++)
-                {
-                Label1:
-                    try
-                    {
-                        if (StopTask.Exception)
-                        {
-                            j = StopTask.CurrentJ;
-                            time = StopTask.CurrentTime;
-                            progressPercentage = (double)StopTask.CurrentData;
-                            progress.Report((double)StopTask.CurrentData);
-                            StopTask.Exception = false;
-                        }
-
-                        token.ThrowIfCancellationRequested();
-
-                        StartBrowser(i);
-                        if (IData.VideoConferences[i].OperPersonal)
-                        {
-                            ChangeFrame();
-                            for (; j < IData.VideoConferences[i].VC_Names.Count; j++)
-                            {
-                                token.ThrowIfCancellationRequested();
-
-                                time += IData.VideoConferences[i].VC_TimeEnd.Subtract(IData.VideoConferences[i].VC_TimeStart).Hours;
-                                IData.Window.Dispatcher.Invoke(()
-                                    => IData.Window.Info.Text
-                                    = $"{IData.VideoConferences[i].IdConference}\n" +
-                                      $"{IData.VideoConferences[i].VC_Theme}\n" +
-                                      $"{IData.VideoConferences[i].VC_Names[j]}\n" +
-                                      $"Всего времени: {TimeSpan.FromHours(time).Days}д:" +
-                                      $"{TimeSpan.FromHours(time).Hours}ч:" +
-                                      $"{TimeSpan.FromHours(time).Minutes}м:" +
-                                      $"{TimeSpan.FromHours(time).Seconds}с");
-
-                                Work(i, j);
-                                progressPercentage += 1.0 / total * 100.0;
-                                progress.Report(progressPercentage);
-                            }
-                            j = 0;
-                        }
-                        else if (allOperPersonalNeeded)
-                        {
-                            progressPercentage += 1.0 / total * 100.0;
-                            progress.Report(progressPercentage);
-                        }
-                        CloseConference(i);
-                        IData.VideoConferences[i].VC_Status = "Завершено";
-                        IData.Window.Dispatcher.Invoke(() => IData.Window.Info.Text = default);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        if (StopTask.PauseRequest)
-                        {
-                            StopTask.PauseRequest = token.IsCancellationRequested;
-                            StopTask.CurrentI = i;
-                            StopTask.CurrentJ = j;
-                            StopTask.CurrentTime = time;
-                            StopTask.CurrentData = progressPercentage;
-                            IData.VideoConferences[i].VC_Status = "Приостановлено";
-                            MessageBox.Show("Программа остановлена", "Пауза", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
-                        if (StopTask.StopRequest)
-                        {
-                            IData.VideoConferences[i].VC_Status = "Сброшено";
-                            MessageBox.Show("Программа сброшена", "Стоп", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        }
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        StopTask.Exception = true;
-                        StopTask.CurrentJ = j;
-                        StopTask.CurrentTime = time;
-                        StopTask.CurrentData = progressPercentage;
-                        if (attempts == 2)
-                        {
-                            attempts = 0;
-                            MessageBox.Show($"{e}");
-                            IData.VideoConferences[i].VC_Status = "Ошибка";
-                            break;
-                        }
-                        attempts++;
-                        webDriver?.Quit();
-                        goto Label1;
-                    }
-                }
-            });
-        }
-
         public override Task RunAsync(CancellationToken token, IProgress<double> progress)
         {
             return Task.Run(() =>
             {
+                WebDriverWait wait;
                 int attempts = 0;
                 int time = 0;
                 bool allOperPersonalNeeded = IData.VideoConferences.All(x => x.OperPersonal == false);
@@ -196,11 +48,13 @@ namespace ESMA.Controllers
                 //Новые значения счетчиков конференций и имен
                 int i = 0;
                 int j = 0;
+                int k = 0;
                 //Если запрос на приостановление есть
                 if (StopTask.PauseRequest)
                 {
                     i = StopTask.CurrentI;
                     j = StopTask.CurrentJ;
+                    k = StopTask.CurrentK;
                     time = StopTask.CurrentTime;
                     progressPercentage = (double)StopTask.CurrentData;
                     progress.Report((double)StopTask.CurrentData);
@@ -211,6 +65,7 @@ namespace ESMA.Controllers
                 {
                     webDriver = new ChromeDriver(cds, chromeOptions);
                     webDriver.Manage().Timeouts().PageLoad = new TimeSpan(0, 0, 10);
+                    wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(20));
                     webDriver.Navigate().GoToUrl($"http://10.23.218.250:7780/pls/portal30/!ais_sys.dyn_obj_card.load?OBJ_ID=6536&WIN_TYPE=4&DATA_VALUE={IData.VideoConferences[index].IdConference}");    //<-Необходимо добавить цикл и переменную номера совещаний в строку
                     webDriver.FindElement(By.Name("p_username")).SendKeys(Login);
                     webDriver.FindElement(By.Name("p_password")).SendKeys(Password);
@@ -319,6 +174,38 @@ namespace ESMA.Controllers
                     webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
                     webDriver.FindElement(By.CssSelector("input[value='Добавить']")).Click();
                     Thread.Sleep(500);
+                }
+                //Внесение персонала по сопровождению.
+                void Escort(int index, int innerIndex)
+                {
+                    webDriver.SwitchTo().Window(webDriver.WindowHandles[0]);
+                    webDriver.SwitchTo().Frame(webDriver.FindElement(By.CssSelector("[name='CARD_FRAME_MARK']")));
+                    //wait for element
+                    var element = wait.Until(d => d.FindElement(By.XPath("/html/body/div/table[1]/tbody/tr/td/table/tbody/tr/td[6]/a")));
+                    //click
+                    webDriver.FindElement(By.XPath("/html/body/div/table[1]/tbody/tr/td/table/tbody/tr/td[6]/a")).Click();
+                    webDriver.FindElement(By.CssSelector("input[value='Добавить']")).Click();
+                    //change window
+                    webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
+                    //wait for element
+                    element = wait.Until(d => d.FindElement(By.XPath("//*[@id=\"W_TABLE\"]/tbody/tr[1]/td/img[2]")));
+                    //click on img
+                    webDriver.FindElement(By.XPath("//*[@id=\"W_TABLE\"]/tbody/tr[1]/td/img[2]")).Click();
+                    //click on input element
+                    webDriver.FindElement(By.CssSelector("input[type='text']")).Click();
+                    //send keys
+                    webDriver.FindElement(By.CssSelector("input[type='text']"))
+                        .SendKeys(IData.VideoConferences[index].VC_Names_For_Content[innerIndex]);
+                    //request
+                    webDriver.FindElement(By.CssSelector("input[value='Запрос']")).Click();
+                    //wait for element
+                    element = wait.Until(d => d.FindElement(By.XPath("//*[@id=\"1\"]/td[2]/input")));
+                    //click checkbox
+                    webDriver.FindElement(By.XPath("//*[@id=\"1\"]/td[2]/input")).Click();
+                    //save
+                    webDriver.FindElement(By.CssSelector("input[value='Сохранить']")).Click();
+                    //change on 0 frame
+                    webDriver.SwitchTo().Window(webDriver.WindowHandles[0]);
                 }
                 void CloseConference(int index)
                 {
@@ -454,6 +341,7 @@ namespace ESMA.Controllers
                             if (StopTask.Exception)
                             {
                                 j = StopTask.CurrentJ;
+                                k = StopTask.CurrentK;
                                 time = StopTask.CurrentTime;
                                 progressPercentage = (double)StopTask.CurrentData;
                                 progress.Report((double)StopTask.CurrentData);
@@ -485,6 +373,16 @@ namespace ESMA.Controllers
                                     progress.Report(progressPercentage);
                                 }
                                 j = 0;
+                                //close oper.personal
+                                webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
+                                //content
+                                //for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
+                                //{
+                                //    token.ThrowIfCancellationRequested();
+
+                                //    Escort(i, k);
+
+                                //}
                             }
                             else if (allOperPersonalNeeded)
                             {
@@ -510,6 +408,7 @@ namespace ESMA.Controllers
                                 StopTask.PauseRequest = token.IsCancellationRequested;
                                 StopTask.CurrentI = i;
                                 StopTask.CurrentJ = j;
+                                StopTask.CurrentK = k;
                                 StopTask.CurrentTime = time;
                                 StopTask.CurrentData = progressPercentage;
                                 IData.VideoConferences[i].VC_Status = "Приостановлено";
@@ -539,6 +438,7 @@ namespace ESMA.Controllers
                         {
                             StopTask.Exception = true;
                             StopTask.CurrentJ = j;
+                            StopTask.CurrentK = k;
                             StopTask.CurrentTime = time;
                             StopTask.CurrentData = progressPercentage;
                             if (attempts == 2)
