@@ -2,23 +2,24 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows7.0</TargetFramework>
     <RootNamespace>ESMA</RootNamespace>
     <UseWPF>true</UseWPF>
-    <Version>1.1.6</Version>
+    <Version>2.0</Version>
     <Authors>Pavel Borodin</Authors>
     <Company>JSC "RZD"</Company>
     <PackageId>ESMA-Controller</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <PackageIcon>msign.png</PackageIcon>
-    <AssemblyVersion>1.1.5.0</AssemblyVersion>
-    <FileVersion>1.1.5.0</FileVersion>
+    <AssemblyVersion>2.0</AssemblyVersion>
+    <FileVersion>2.0</FileVersion>
     <NeutralLanguage></NeutralLanguage>
     <PackageReleaseNotes>v1.1.0.5 - Добавлена возможность создавать ЗИ
 v1.1.1.0 - Добавлена возможность согласовывать план работ
 v1.1.1.1 - Фикс багов
 v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

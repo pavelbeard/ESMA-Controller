@@ -6,15 +6,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Threading;
-using Process = ESMA.ViewModel.Process;
+using Process = ESMA.DataCollections.CoreDataCollections.Process;
 using ESMA.ViewModel;
 using System.Collections.Generic;
 using MyLibrary;
 using System.IO;
-using Newtonsoft.Json;
-using System.Text;
-using System.Security.AccessControl;
 using ESMA.ChangesCloser;
+using ESMA.DataCollections.CoreDataCollections;
 
 namespace ESMA
 {
@@ -139,7 +137,6 @@ namespace ESMA
             }
             return null;
         }
-
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (Height > SystemParameters.MaximizedPrimaryScreenHeight - 15 || WindowState == WindowState.Maximized)
@@ -153,7 +150,6 @@ namespace ESMA
                 Col1.Width = new GridLength(210, GridUnitType.Pixel);
             }
         }
-
         private void window_Closed(object sender, EventArgs e)
         {
             var processes = System.Diagnostics.Process.GetProcessesByName("EXCEL.EXE");
@@ -167,7 +163,6 @@ namespace ESMA
                 p?.Close();
             }
         }
-
         private void modulesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             AppViewModel.MwCurrentTab = modulesList.SelectedIndex;

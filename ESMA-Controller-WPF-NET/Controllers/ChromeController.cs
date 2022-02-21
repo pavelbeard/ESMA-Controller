@@ -27,7 +27,7 @@ namespace ESMA.Chromedriver
         public string Login { get; set; }
         public string Password { get; set; }
         public int CurrentTableIndex { get; set; }
-        protected ObservableCollection<string> NamesArray { get; set; }
+        protected ObservableCollection<EmpUnit> NamesArray { get; set; }
 
         protected WebDriverWait webDriverWait;
         protected IWebDriver webDriver;
@@ -41,13 +41,13 @@ namespace ESMA.Chromedriver
 
             var list = new EmpList(file);
 
-            var newList = new ObservableCollection<string>();
+            var newList = new ObservableCollection<EmpUnit>();
 
             for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].IsChecked)
                 {
-                    newList.Add(list[i].Name);
+                    newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
                 }
             }
 

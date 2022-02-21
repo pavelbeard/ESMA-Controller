@@ -1,4 +1,5 @@
 ﻿using ESMA.ChangesCloser;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
 using Microsoft.Win32;
 using MyLibrary;

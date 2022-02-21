@@ -1,4 +1,5 @@
 ﻿using ESMA.Chromedriver;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
 using OpenQA.Selenium;
 using System;
@@ -52,7 +53,7 @@ namespace ESMA.DataLoaders
                             P_Description = table[1][i],
                             P_TimeStart = DateTime.Parse("00:00"),
                             P_Event = table[2][i],
-                            P_Names = new ObservableCollection<string>(NamesArray)
+                            P_Names = NamesArray
                         });
                     }
 

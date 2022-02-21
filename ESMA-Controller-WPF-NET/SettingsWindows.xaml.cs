@@ -18,7 +18,7 @@ namespace ESMA
     {
         private IJsonService js;
         private EmpList List { get; set; }
-        private string Config { get; set; }
+        public string Config { get; set; }
         private string Switch { get; set; }
 
         public ConferenceSettingsWindow()

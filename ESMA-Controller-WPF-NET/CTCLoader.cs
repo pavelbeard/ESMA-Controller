@@ -1,4 +1,5 @@
 ﻿using ESMA.Chromedriver;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;

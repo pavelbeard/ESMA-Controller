@@ -1,5 +1,6 @@
 ﻿using ESMA.Chromedriver;
 using ESMA.DataCollections;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
 using Newtonsoft.Json;
 using OpenQA.Selenium;

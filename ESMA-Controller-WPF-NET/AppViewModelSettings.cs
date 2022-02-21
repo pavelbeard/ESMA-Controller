@@ -78,6 +78,17 @@ namespace ESMA
                         ["EmpListFile"] = fileName,
                         ["SwitchFile"] = @sw.ToString()
                     });
+
+                    var lists = new JSONEmpCollection();
+
+                    for (int i = 0; i < List.Count; i++)
+                    {
+                        lists.NamesList.Add(List[i].Name);
+                        lists.CheckList.Add(List[i].IsChecked);
+                    }
+
+                    var str = JsonConvert.SerializeObject(lists);
+                    File.WriteAllText(CsWindow.Config, str);
                 }
 
                 if (sw == 0)

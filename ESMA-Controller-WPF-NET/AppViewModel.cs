@@ -2,6 +2,7 @@
 using ESMA.Chromedriver;
 using ESMA.Controllers;
 using ESMA.DataCollections;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.DataLoaders;
 using ESMA.ExcelData;
 using Microsoft.Win32;
@@ -24,6 +25,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using VideoConference = ESMA.DataCollections.CoreDataCollections.VideoConference;
 
 namespace ESMA.ViewModel
 {
@@ -46,13 +48,13 @@ namespace ESMA.ViewModel
 
                 var list = new EmpList(file);
 
-                var newList = new ObservableCollection<string>();
+                var newList = new ObservableCollection<EmpUnit>();
 
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].IsChecked)
                     {
-                        newList.Add(list[i].Name);
+                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
                     }
                 }
 
@@ -74,27 +76,63 @@ namespace ESMA.ViewModel
         }
         private Changes AddChanges
         {
-            get => new Changes
+            get
             {
-                IdChanges = 0,
-                C_Description = "null",
-                C_TimeStart = DateTime.Parse("00:00"),
-                C_TimeEnd = DateTime.Parse("00:00"),
-                C_Job = "null",
-                C_Names = new ObservableCollection<string>(ConfigData.NamesList)
-            };
+                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                string file = t["EmpListFile"];
+
+                var list = new EmpList(file);
+
+                var newList = new ObservableCollection<EmpUnit>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].IsChecked)
+                    {
+                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                    }
+                }
+
+                return new Changes
+                {
+                    IdChanges = 0,
+                    C_Description = "null",
+                    C_TimeStart = DateTime.Parse("00:00"),
+                    C_TimeEnd = DateTime.Parse("00:00"),
+                    C_Job = "null",
+                    C_Names = newList
+                };
+            }
         }
         private Process AddProcess
         {
-            get => new Process
+            get 
             {
-                IdProcess = 0,
-                P_Description = "null",
-                P_TimeStart = DateTime.Parse("00:00"),
-                P_Job = "null",
-                P_Event = "null",
-                P_Names = new ObservableCollection<string>(ConfigData.NamesList)
-            };
+                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                string file = t["EmpListFile"];
+
+                var list = new EmpList(file);
+
+                var newList = new ObservableCollection<EmpUnit>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].IsChecked)
+                    {
+                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                    }
+                }
+
+                return new Process
+                {
+                    IdProcess = 0,
+                    P_Description = "null",
+                    P_TimeStart = DateTime.Parse("00:00"),
+                    P_Job = "null",
+                    P_Event = "null",
+                    P_Names = newList
+                };
+            } 
         }
         private ChangesCreate AddCTC
         {
@@ -801,19 +839,19 @@ namespace ESMA.ViewModel
                     {
                         case 0:
                             {
-                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
-                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                                //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
+                                //new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
+                                //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                                //new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             }
                             break;
                         case 1:
-                            IData.Window.changesList[IData.Window.Changes.SelectedIndex].C_Names =
-                               new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.changesList[IData.Window.Changes.SelectedIndex].C_Names =
+                            //   new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         case 2:
-                            IData.Window.processList[IData.Window.Process.SelectedIndex].P_Names =
-                               new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.processList[IData.Window.Process.SelectedIndex].P_Names =
+                            //   new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         default:
                             break;
@@ -837,8 +875,8 @@ namespace ESMA.ViewModel
                     switch (MwCurrentTab)
                     {
                         case 0:
-                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                            //    new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                     }
                 }
@@ -918,7 +956,7 @@ namespace ESMA.ViewModel
                         {
                             for (int j = 0; j < IData.Window.changesList[i].C_Names.Count; j++)
                             {
-                                reportData.Emps.Add(IData.Window.changesList[i].C_Names[j]);
+                                reportData.Emps.Add(IData.Window.changesList[i].C_Names[j].Name);
                             }
 
                             if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
@@ -1010,158 +1048,6 @@ namespace ESMA.ViewModel
             {
                 p.Close();
             }
-        }
-    }
-
-    public class VideoConference : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> vc_Names;
-        private ObservableCollection<string> vc_Names_for_content;
-        private string vc_Status;
-
-        public int IdConference { get; set; }
-        public string VC_Theme { get; set; }
-        public DateTime VC_Date { get; set; }
-        public DateTime VC_TimeStart { get; set; }
-        public DateTime VC_TimeEnd { get; set; }
-        public string VC_Job { get; set; }
-        public bool OperPersonal { get; set; }
-        public ObservableCollection<string> VC_Names
-        {
-            get => vc_Names;
-            set
-            {
-                vc_Names = value;
-                OnPropertyChanged("VC_Names");
-            }
-        }
-        public ObservableCollection<string> VC_Names_For_Content
-        {
-            get => vc_Names_for_content;
-            set
-            {
-                vc_Names_for_content = value;
-                OnPropertyChanged("VC_Names_For_Content");
-            }
-        }
-        public bool Escort { get; set; }
-        public bool CloseConference { get; set; }
-        public string CloseCode { get; set; }
-        public string VC_Status
-        {
-            get => vc_Status;
-            set
-            {
-                vc_Status = value;
-                OnPropertyChanged("VC_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-    public class Changes : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> c_Names;
-        private string c_Status;
-
-        public int IdChanges { get; set; }
-        public string C_Description { get; set; }
-        public DateTime C_TimeStart { get; set; }
-        public DateTime C_TimeEnd { get; set; }
-        public string C_Job { get; set; }
-        public ObservableCollection<string> C_Names
-        {
-            get { return c_Names; }
-            set
-            {
-                c_Names = value;
-                OnPropertyChanged("C_Names");
-            }
-        }
-        public string C_Status
-        {
-            get => c_Status;
-            set
-            {
-                c_Status = value;
-                OnPropertyChanged("C_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-    public class Process : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> p_Names;
-        private string p_Status;
-
-        public int IdProcess { get; set; }
-        public string P_Description { get; set; }
-        public DateTime P_TimeStart { get; set; }
-        public string P_Job { get; set; }
-        public string P_Event { get; set; }
-        public ObservableCollection<string> P_Names
-        {
-            get => p_Names;
-            set
-            {
-                p_Names = value;
-                OnPropertyChanged("P_Names");
-            }
-        }
-        public string P_Status
-        {
-            get => p_Status;
-            set
-            {
-                p_Status = value;
-                OnPropertyChanged("P_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-
-    public class ChangesCreate : INotifyPropertyChanged
-    {
-        private string ctc_Status;
-
-        public int IdCTC { get; set; }
-        public string CTC_Description { get; set; }
-        public DateTime CTC_DateStart { get; set; }
-        public DateTime CTC_DateEnd { get; set; }
-        public DateTime CTC_TimeStart { get; set; }
-        public DateTime CTC_TimeEnd { get; set; }
-        public string CTC_Status
-        {
-            get => ctc_Status;
-            set
-            {
-                ctc_Status = value;
-                OnPropertyChanged("CTC_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 
