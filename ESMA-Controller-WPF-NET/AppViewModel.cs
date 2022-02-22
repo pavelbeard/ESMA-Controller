@@ -43,95 +43,119 @@ namespace ESMA.ViewModel
         {
             get
             {
-                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
-                string file = t["EmpListFile"];
-
-                var list = new EmpList(file);
-
-                var newList = new ObservableCollection<EmpUnit>();
-
-                for (int i = 0; i < list.Count; i++)
+                try
                 {
-                    if (list[i].IsChecked)
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
                     }
-                }
 
-                return new VideoConference
+                    return new VideoConference
+                    {
+                        IdConference = 0,
+                        VC_Theme = "null",
+                        VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
+                        VC_TimeStart = DateTime.Parse("00:00"),
+                        VC_TimeEnd = DateTime.Parse("00:00"),
+                        VC_Job = "null",
+                        VC_Names = newList,
+                        VC_Names_For_Content = newList,
+                        OperPersonal = true,
+                        CloseConference = true,
+                        Escort = false
+                    };
+                }
+                catch (Exception)
                 {
-                    IdConference = 0,
-                    VC_Theme = "null",
-                    VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
-                    VC_TimeStart = DateTime.Parse("00:00"),
-                    VC_TimeEnd = DateTime.Parse("00:00"),
-                    VC_Job = "null",
-                    VC_Names = newList,
-                    VC_Names_For_Content = newList,
-                    OperPersonal = true,
-                    CloseConference = true,
-                    Escort = false
-                };
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
             }
         }
         private Changes AddChanges
         {
             get
             {
-                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
-                string file = t["EmpListFile"];
-
-                var list = new EmpList(file);
-
-                var newList = new ObservableCollection<EmpUnit>();
-
-                for (int i = 0; i < list.Count; i++)
+                try
                 {
-                    if (list[i].IsChecked)
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
                     }
-                }
 
-                return new Changes
+                    return new Changes
+                    {
+                        IdChanges = 0,
+                        C_Description = "null",
+                        C_TimeStart = DateTime.Parse("00:00"),
+                        C_TimeEnd = DateTime.Parse("00:00"),
+                        C_Job = "null",
+                        C_Names = newList
+                    };
+                }
+                catch (Exception)
                 {
-                    IdChanges = 0,
-                    C_Description = "null",
-                    C_TimeStart = DateTime.Parse("00:00"),
-                    C_TimeEnd = DateTime.Parse("00:00"),
-                    C_Job = "null",
-                    C_Names = newList
-                };
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
             }
         }
         private Process AddProcess
         {
             get 
             {
-                dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
-                string file = t["EmpListFile"];
-
-                var list = new EmpList(file);
-
-                var newList = new ObservableCollection<EmpUnit>();
-
-                for (int i = 0; i < list.Count; i++)
+                try
                 {
-                    if (list[i].IsChecked)
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
                     }
-                }
 
-                return new Process
+                    return new Process
+                    {
+                        IdProcess = 0,
+                        P_Description = "null",
+                        P_TimeStart = DateTime.Parse("00:00"),
+                        P_Job = "null",
+                        P_Event = "null",
+                        P_Names = newList
+                    };
+                }
+                catch (Exception)
                 {
-                    IdProcess = 0,
-                    P_Description = "null",
-                    P_TimeStart = DateTime.Parse("00:00"),
-                    P_Job = "null",
-                    P_Event = "null",
-                    P_Names = newList
-                };
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
             } 
         }
         private ChangesCreate AddCTC
@@ -954,18 +978,23 @@ namespace ESMA.ViewModel
 
                         for (int i = 0; i < IData.Window.changesList.Count; i++)
                         {
-                            for (int j = 0; j < IData.Window.changesList[i].C_Names.Count; j++)
+                            var list = IData.Window.changesList[i].C_Names;
+                            foreach (var name in list)
                             {
-                                reportData.Emps.Add(IData.Window.changesList[i].C_Names[j].Name);
-                            }
+                                if (name.IsChecked)
+                                {
+                                    reportData.Emps.Add(name.Name);
+                                    if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
+                                    {
+                                        reportData.Lrps.Add("0000");
 
-                            if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
-                            {
-                                reportData.Lrps.Add("0000");
-                            }
-                            else
-                            {
-                                reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
+                                    }
+                                    else
+                                    {
+                                        reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
+                                    }
+                                }
+                                
                             }
                         }
 

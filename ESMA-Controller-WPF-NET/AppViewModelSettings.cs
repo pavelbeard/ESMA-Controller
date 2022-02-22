@@ -70,7 +70,8 @@ namespace ESMA
                 async void Change(string fileName, string def, int @sw)
                 {
                     List = new EmpList(fileName);
-                    
+
+                    CsWindow.Config = fileName;
                     CsWindow.namesBox.ItemsSource = List;
                     CsWindow.ChangeButton.Content = def;
                     await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string>

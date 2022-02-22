@@ -95,7 +95,8 @@ namespace ESMA
                     ["InNight"] = inNight.ToString(), 
                     ["SNight"] = sNight.ToString(), 
                     ["RefrEmp"] = refrEmp.ToString(), 
-                    ["Boss"] = boss.ToString()
+                    ["Boss"] = boss.ToString(),
+                    ["EmpListFile"] = Config
                 });;
             }
             catch (Exception)

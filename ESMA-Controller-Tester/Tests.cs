@@ -1,10 +1,12 @@
 using NUnit.Framework;
-using System.IO;
 using ESMA;
 using ESMA.DataCollections;
-using Newtonsoft.Json;
 using ESMA.Tests;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Text;
+using System.Linq;
 
 namespace ESMA_Controller_Tester
 {
@@ -55,7 +57,114 @@ namespace ESMA_Controller_Tester
 
 
             Assert.AreEqual(true, vcct.RunTest());
+        }
 
+        [Test]
+        public void TestDictionary()
+        {
+            var emps = new List<string>
+            {
+                "Достойнова О.Г.",
+                "Пчелкина Ю.М.",
+                "Жаворонкина Н.В.",
+                "Носкина Е.А.",
+                "Жданова Н.В.",
+                "Васильева И.А.",
+                "Жукова Ю.М.",
+                "Кутакова Н.М.",
+                "Степачева И.Н.",
+                "Глубокова Е.Н.",
+                "Бородин П.А.",
+                "Хромов Д.А.",
+                "Степанов М.А."
+            };
+
+            var lrps = new List<string>() 
+            { 
+                "1121", 
+                "1121", 
+                "1122", 
+                "1122", 
+                "1122", 
+                "1121", 
+                "1122",
+                "1123",
+                "1121"
+            };
+            var names = new List<string>() 
+            { 
+                "Достойнова О.Г.", 
+                "Васильева И.А.", 
+                "Достойнова О.Г.", 
+                "Бородин П.А.", 
+                "Васильева И.А.", 
+                "Хромов Д.А.", 
+                "Жукова Ю.М.",
+                "Хромов Д.А.",
+                "Жукова Ю.М."
+            };
+            
+            //алгоритм связывания ключей и значений
+            var dictionary = new Dictionary<string, List<string>>();
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (dictionary.ContainsKey(names[i]))
+                {
+                    dictionary[names[i]].Add(lrps[i]);
+                }
+                else
+                {
+                    dictionary[names[i]] = new List<string>
+                    {
+                        lrps[i]
+                    };
+                }
+            }
+
+            foreach (var d in dictionary)
+            {
+                System.Console.WriteLine($"Key: {d.Key}");
+                for (int i = 0; i < d.Value.Count; i++)
+                {
+                    System.Console.WriteLine($"Value: {d.Value[i]}");
+                }
+            }
+
+            //на каких строчках сидят эти фамилии
+            //var tuple = (Rows: new List<int>(), Emps: new List<string>());
+
+            //for (int empsCounter = 0; empsCounter < names.Count; empsCounter++)
+            //{
+            //    for (int row = 3; row <= 14; row++)
+            //    {
+            //        if (emps[row - 3] == "Жаворонкина Н.В.")
+            //        {
+            //            System.Console.WriteLine("в ночь");
+            //        }
+            //        if (emps[row - 3] == "Степачева И.Н.")
+            //        {
+            //            System.Console.WriteLine("с ночи");
+            //            System.Console.WriteLine("выполнено");
+            //            System.Console.WriteLine("т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4");
+            //        }
+            //        //код, который выводит имена в соответствии с ключами
+            //        if (emps[row - 3] == names[empsCounter])
+            //        {
+            //            System.Console.WriteLine();
+            //            System.Console.WriteLine($"E{row}:E{row} выполнено"); ;
+            //            System.Console.WriteLine($"D{row}:D{row} т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4"); ;
+            //            tuple.Rows.Add(row);
+            //            tuple.Emps.Add(names[empsCounter]);
+            //            System.Console.WriteLine();
+            //        }
+            //    }
+            //}
+
+            ////раскидываем номера лрп по ячейкам
+            //for (int i = 0; i < tuple.Rows.Count; i++)
+            //{
+
+            //}
         }
     }
 }
