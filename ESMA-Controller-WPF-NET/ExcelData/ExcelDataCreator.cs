@@ -78,16 +78,16 @@ namespace ESMA
                     ews.Row(2).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     ews.Row(2).Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                     //Работа с остальными строками и столбцами
-                    ews.SelectedRange[$"A3:E14"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    ews.SelectedRange[$"A3:E14"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    ews.SelectedRange[$"A3:E14"].Style.WrapText = true;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.WrapText = true;
 
                     for (int rows = 3; rows <= numOfRows; rows++)
                     {
-                        ews.Row(rows).Height = ews.Row(2).Height; //Высота всех строк
+                        ews.Row(rows).Height = /*ews.Row(2).Height*/50; //Высота всех строк
                     }
 
-                    ews.SelectedRange[$"A3:E14"].Merge = true; //Объединение столбца РВБ
+                    ews.SelectedRange[$"A3:A{numOfRows}"].Merge = true; //Объединение столбца РВБ
 
                     for (int col = 0; col < 5; col++)
                     {
@@ -116,6 +116,7 @@ namespace ESMA
                     dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
 
                     //здесь будет код, который привязывает лрп к списку имен
+                    //реализация multivalue dictionary
                     var newList = new Dictionary<string, List<string>>();
                     for (int i = 0; i < reportData.Emps.Count; i++)
                     {
@@ -144,14 +145,21 @@ namespace ESMA
                             {
                                 ews.SelectedRange[$"C{row}:C{row}"].Value = "с ночи";
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
-                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4";
+                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1, 14.4";
                             }
                             //код, который выводит имена в соответствии с ключами
                             if (EmpsList.Keys.ToList()[row - 3] == newList.Keys.ToList()[empsCounter])
                             {
-                                ews.Row(row).Height = 35;
+                                if (newList.Values.ToList()[empsCounter].Count < 2)
+                                {
+                                    ews.Row(row).Height = 50 * newList.Values.ToList()[empsCounter].Count;
+                                }
+                                else
+                                {
+                                    ews.Row(row).Height = 25 * newList.Values.ToList()[empsCounter].Count;
+                                }
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
-                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4";
+                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1, 14.4";
                                 ews.SelectedRange[$"C{row}:C{row}"].Value = string.Join(",\n", newList.Values.ToList()[empsCounter]);
                             }
                         }
