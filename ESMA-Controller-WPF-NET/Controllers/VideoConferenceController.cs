@@ -83,7 +83,7 @@ namespace ESMA.Controllers
                     webDriver.FindElement(By.XPath("//input[@name='BT_GEN']")).Click();
                     Thread.Sleep(500);
                 }
-                void Work(int index, int innerIndex)
+                void Work(int index, int innerIndex, List<string> source)
                 {
                     ArrayList arrayList = new()
                     {
@@ -143,7 +143,7 @@ namespace ESMA.Controllers
                     }
 
                     webDriver.FindElement(By.XPath("//input[@name='p_value1']")).Clear();
-                    webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(IData.VideoConferences[index].VC_Names[innerIndex]);
+                    webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(source[innerIndex]);
                     webDriver.FindElement(By.XPath("//input[@name='bt_where']")).Click();
                     webDriver.FindElement(By.XPath("//td//a")).Click();
                     webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
@@ -176,7 +176,7 @@ namespace ESMA.Controllers
                     Thread.Sleep(500);
                 }
                 //Внесение персонала по сопровождению.
-                void Escort(int index, int innerIndex)
+                void Escort(int index, int innerIndex, List<string> source)
                 {
                     webDriver.SwitchTo().Window(webDriver.WindowHandles[0]);
                     webDriver.SwitchTo().Frame(webDriver.FindElement(By.CssSelector("[name='CARD_FRAME_MARK']")));
@@ -195,7 +195,7 @@ namespace ESMA.Controllers
                     webDriver.FindElement(By.CssSelector("input[type='text']")).Click();
                     //send keys
                     webDriver.FindElement(By.CssSelector("input[type='text']"))
-                        .SendKeys(IData.VideoConferences[index].VC_Names_For_Content[innerIndex]);
+                        .SendKeys(source[innerIndex]);
                     //request
                     webDriver.FindElement(By.CssSelector("input[value='Запрос']")).Click();
                     //wait for element
@@ -238,7 +238,7 @@ namespace ESMA.Controllers
                             }
 
                             webDriver.FindElement(By.XPath("//input[@name='p_value1']")).Clear();
-                            webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(IData.VideoConferences[index].VC_Names[^1]);
+                            webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(IData.VideoConferences[index].VC_Names[^1].Name);
                             webDriver.FindElement(By.XPath("//input[@name='bt_where']")).Click();
                             webDriver.FindElement(By.XPath("//td//a")).Click();
                             webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
@@ -332,7 +332,6 @@ namespace ESMA.Controllers
 
                 for (; i < IData.VideoConferences.Count; i++)
                 {
-
                     while (true)
                     {
                         try
@@ -349,11 +348,24 @@ namespace ESMA.Controllers
                             }
 
                             token.ThrowIfCancellationRequested();
+
                             StartBrowser(i);
                             if (IData.VideoConferences[i].OperPersonal)
                             {
+                                //создание нового списка имен на основе отмеченных
+                                var names = IData.VideoConferences[i].VC_Names;
+                                var newNames = new List<string>();
+
+                                for (int l = 0; l < names.Count; l++)
+                                {
+                                    if (names[l].IsChecked)
+                                    {
+                                        newNames.Add(names[l].Name);
+                                    }
+                                }
+
                                 ChangeFrame();
-                                for (; j < IData.VideoConferences[i].VC_Names.Count; j++)
+                                for (; j < newNames.Count; j++)
                                 {
                                     token.ThrowIfCancellationRequested();
 
@@ -362,33 +374,47 @@ namespace ESMA.Controllers
                                         => IData.Window.Info.Text
                                         = $"{IData.VideoConferences[i].IdConference}\n" +
                                           $"{IData.VideoConferences[i].VC_Theme}\n" +
-                                          $"{IData.VideoConferences[i].VC_Names[j]}\n" +
+                                          $"{newNames[j]}\n" +
                                           $"Всего времени: {TimeSpan.FromHours(time).Days}д:" +
                                           $"{TimeSpan.FromHours(time).Hours}ч:" +
                                           $"{TimeSpan.FromHours(time).Minutes}м:" +
                                           $"{TimeSpan.FromHours(time).Seconds}с");
 
-                                    Work(i, j);
+                                    Work(i, j, newNames);
                                     progressPercentage += 1.0 / total * 100.0;
                                     progress.Report(progressPercentage);
                                 }
                                 j = 0;
-                                //close oper.personal
-                                webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
-                                //content
-                                //for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
-                                //{
-                                //    token.ThrowIfCancellationRequested();
+                                if (IData.VideoConferences[i].Escort)
+                                {
+                                    //новый список имен для сопровождения
+                                    //создание нового списка имен на основе отмеченных
+                                    var namesEscort = IData.VideoConferences[i].VC_Names_For_Content;
+                                    var newNamesEscort = new List<string>();
 
-                                //    Escort(i, k);
-
-                                //}
+                                    for (int l = 0; l < namesEscort.Count; l++)
+                                    {
+                                        if (namesEscort[l].IsChecked)
+                                        {
+                                            newNamesEscort.Add(namesEscort[l].Name);
+                                        }
+                                    }
+                                    //close oper.personal
+                                    webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
+                                    //content
+                                    for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        Escort(i, k, newNamesEscort);
+                                    }
+                                    k = 0;
+                                }
                             }
                             else if (allOperPersonalNeeded)
                             {
                                 IData.Window.Dispatcher.Invoke(()
                                         => IData.Window.Info.Text
-                                        = $"*Без внесения опер. персонала" +
+                                        = $"*Без внесения опер. персонала*" +
                                           $"{IData.VideoConferences[i].IdConference}\n" +
                                           $"{IData.VideoConferences[i].VC_Theme}\n");
 

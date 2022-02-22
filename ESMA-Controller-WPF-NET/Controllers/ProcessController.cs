@@ -72,9 +72,9 @@ namespace ESMA.Controllers
                             webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
                             webDriver.FindElement(By.XPath("//td//img[@src='/images/list.gif']")).Click();
                             webDriver.SwitchTo().Window(webDriver.WindowHandles[2]);
-                            webDriver.FindElement(By.XPath($"//*[contains(@href, '{IData.Processes[i].P_Names[namesCount].Split(" ")[0]}')]")).Click(); //Вставка имени
-                                                                                                                                                        //)-
-                                                                                                                                                        //Календарь
+                            webDriver.FindElement(By.XPath($"//*[contains(@href, '{IData.Processes[i].P_Names[namesCount].Name.Split(" ")[0]}')]")).Click(); //Вставка имени                                                                                                                                                    
+                            //)-                                                                                                                                                       
+                            //Календарь
                             ArrayList arrayList = new ArrayList
                             {
                                 new List<string>

@@ -42,7 +42,7 @@ namespace ESMA
         {
             try
             {
-                int numOfRows = 14;
+                int numOfRows = EmpsList.Values.Count + 1;
                 //Col headers
                 string[] colHeaders =
                 {
@@ -78,22 +78,23 @@ namespace ESMA
                     ews.Row(2).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     ews.Row(2).Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                     //Работа с остальными строками и столбцами
-                    ews.SelectedRange["A3:E14"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    ews.SelectedRange["A3:E14"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    ews.SelectedRange["A3:E14"].Style.WrapText = true;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    ews.SelectedRange[$"A3:E{numOfRows}"].Style.WrapText = true;
 
                     for (int rows = 3; rows <= numOfRows; rows++)
                     {
-                        ews.Row(rows).Height = ews.Row(2).Height; //Высота всех строк
+                        ews.Row(rows).Height = /*ews.Row(2).Height*/50; //Высота всех строк
                     }
 
-                    ews.SelectedRange["A3:A14"].Merge = true; //Объединение столбца РВБ
+                    ews.SelectedRange[$"A3:A{numOfRows}"].Merge = true; //Объединение столбца РВБ
 
                     for (int col = 0; col < 5; col++)
                     {
                         for (int row = 2; row <= numOfRows; row++)
                         {
-                            ews.Cells[$"{columns[col]}{row}:{columns[col]}{row}"].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin); //Границы для всех ячеее
+                            ews.Cells[$"{columns[col]}{row}:{columns[col]}{row}"].
+                                Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin); //Границы для всех ячеек
                         }
                     }
 
@@ -108,13 +109,31 @@ namespace ESMA
                         ews.Cells[$"B{row}:B{row}"].Value = EmpsList.Values.ToList()[i]; // Фамилии
                     }
                     //Заполнение ячеек данными
-                    ews.SelectedRange["C3:C14"].Value = "выходной";
+                    ews.SelectedRange[$"C3:C{numOfRows}"].Value = "выходной";
 
                     var newLrps = reportData.Lrps.Select(x => x.Insert(2, "-")).ToList(); //Вставка в номер ЛР "-"
 
                     dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
 
-                    for (int empsCounter = 0; empsCounter < reportData.Emps.Count; empsCounter++)
+                    //здесь будет код, который привязывает лрп к списку имен
+                    //реализация multivalue dictionary
+                    var newList = new Dictionary<string, List<string>>();
+                    for (int i = 0; i < reportData.Emps.Count; i++)
+                    {
+                        if (newList.ContainsKey(reportData.Emps[i]))
+                        {
+                            newList[reportData.Emps[i]].Add(newLrps[i]);
+                        }
+                        else
+                        {
+                            newList[reportData.Emps[i]] = new List<string>
+                            {
+                                newLrps[i]
+                            };
+                        }
+                    }
+                    //переработка
+                    for (int empsCounter = 0; empsCounter < newList.Keys.Count; empsCounter++)
                     {
                         for (int row = 3; row <= numOfRows; row++)
                         {
@@ -126,31 +145,39 @@ namespace ESMA
                             {
                                 ews.SelectedRange[$"C{row}:C{row}"].Value = "с ночи";
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
-                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4";
+                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1, 14.4";
                             }
-                            if (EmpsList.Keys.ToList()[row - 3] == reportData.Emps[empsCounter])
+                            //код, который выводит имена в соответствии с ключами
+                            if (EmpsList.Keys.ToList()[row - 3] == newList.Keys.ToList()[empsCounter])
                             {
-                                ews.Row(row).Height = 25 * reportData.Lrps.Count;
+                                if (newList.Values.ToList()[empsCounter].Count < 2)
+                                {
+                                    ews.Row(row).Height = 50 * newList.Values.ToList()[empsCounter].Count;
+                                }
+                                else
+                                {
+                                    ews.Row(row).Height = 25 * newList.Values.ToList()[empsCounter].Count;
+                                }
                                 ews.SelectedRange[$"E{row}:E{row}"].Value = "выполнено";
-                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4";
-                                ews.SelectedRange[$"C{row}:C{row}"].Value = string.Join(",\n", newLrps);
+                                ews.SelectedRange[$"D{row}:D{row}"].Value = "т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1, 14.4";
+                                ews.SelectedRange[$"C{row}:C{row}"].Value = string.Join(",\n", newList.Values.ToList()[empsCounter]);
                             }
                         }
                     }
 
                     if (Convert.ToString(t["Boss"]) == "Васильева И.А.")
                     {
-                        ews.Cells["C17:C17"].Value = "и.о. Ст. электромеханика";
+                        ews.Cells[$"C{numOfRows + 3}:C{numOfRows + 3}"].Value = "и.о. Ст. электромеханика";
                         var sign = ews.Drawings.AddPicture("sign", new FileInfo($"{Environment.CurrentDirectory}\\vsign.png"));
                         sign.SetPosition(16, 5, 3, 0);
-                        ews.Cells["E17:E17"].Value = Convert.ToString(t["Boss"]);
+                        ews.Cells[$"E{numOfRows + 3}:E{numOfRows + 3}"].Value = Convert.ToString(t["Boss"]);
                     }
                     else if (Convert.ToString(t["Boss"]) == "Степанов М.А.")
                     {
-                        ews.Cells["C17:C17"].Value = "Старший электромеханик";
+                        ews.Cells[$"C{numOfRows + 3}:C{numOfRows + 3}"].Value = "Старший электромеханик";
                         var sign = ews.Drawings.AddPicture("sign", new FileInfo($"{Environment.CurrentDirectory}\\msign.png"));
                         sign.SetPosition(16, 5, 3, 0);
-                        ews.Cells["E17:E17"].Value = Convert.ToString(t["Boss"]);
+                        ews.Cells[$"E{numOfRows + 3}:E{numOfRows + 3}"].Value = Convert.ToString(t["Boss"]);
                     }
 
                     //Сохранение данных

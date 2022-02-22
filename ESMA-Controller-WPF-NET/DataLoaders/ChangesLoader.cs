@@ -10,6 +10,8 @@ using System.ComponentModel;
 using ESMA.ViewModel;
 using System.Threading.Tasks;
 using System.Windows;
+using ESMA.DataCollections.CoreDataCollections;
+using ESMA.DataCollections;
 
 namespace ESMA.DataLoaders
 {
@@ -46,6 +48,9 @@ namespace ESMA.DataLoaders
                     var table = LoadLrpTable("ЛР ОР") ?? throw new Exception("Ошибка, таблица не заполнена");
 
                     var toLoad = new List<Changes>();
+
+
+
                     for (int i = 0; i < table[0].Count; i++)
                     {
                         toLoad.Add(new Changes
@@ -54,7 +59,7 @@ namespace ESMA.DataLoaders
                             C_Description = $"{table[2][i]}:{table[1][i]}",
                             C_TimeStart = DateTime.Parse("00:00"),
                             C_TimeEnd = DateTime.Parse("00:00"),
-                            C_Names = new ObservableCollection<string>(NamesArray)
+                            C_Names = new ObservableCollection<EmpUnit>(NamesArray)
                         }); ;
                     }
                     progress.Report(75);

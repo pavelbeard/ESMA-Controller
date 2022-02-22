@@ -1,4 +1,5 @@
 ﻿using ESMA.ChangesCloser;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
 using Microsoft.Win32;
 using MyLibrary;
@@ -25,7 +26,7 @@ namespace ESMA
                     Conferences = new BindingList<VideoConference>(),
                     Changes = new BindingList<Changes>(),
                     Processes = new BindingList<Process>(),
-                    CTCs = new BindingList<CTC>(),
+                    CTCs = new BindingList<ChangesCreate>(),
                     ChangesCloserElements = new BindingList<ChangesCloserElement>()
                 });
 
@@ -34,7 +35,7 @@ namespace ESMA
                     IData.Window.videoList?.Clear();
                     IData.Window.changesList?.Clear();
                     IData.Window.processList?.Clear();
-                    IData.Window.ctcList?.Clear();
+                    IData.Window.chCreateList?.Clear();
                     IData.Window.cceList?.Clear();
 
                     IData.Window.videoList = t.Conferences;
@@ -49,8 +50,8 @@ namespace ESMA
                     IData.Window.Process.ItemsSource = IData.Window.processList;
                     IData.Window.P.Header = $"ГТП\n{Path.GetFileName(file)}";
 
-                    IData.Window.ctcList = t.CTCs;
-                    IData.Window.ChangesCreate.ItemsSource = IData.Window.ctcList;
+                    IData.Window.chCreateList = t.CTCs;
+                    IData.Window.ChangesCreate.ItemsSource = IData.Window.chCreateList;
                     IData.Window.CC.Header = $"Создание ЗИ\n{Path.GetFileName(file)}";
 
                     IData.Window.cceList = t.ChangesCloserElements;

@@ -1,11 +1,15 @@
 ﻿using ESMA.Chromedriver;
+using ESMA.DataCollections;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -157,6 +161,7 @@ namespace ESMA.DataLoaders
                         }
 
                         var toLoad = new List<VideoConference>();
+
                         for (int i = 0; i < table.Count; i++)
                         {
                             toLoad.Add(new VideoConference
@@ -166,10 +171,11 @@ namespace ESMA.DataLoaders
                                 VC_TimeStart = DateTime.Parse(table[i][2]),
                                 VC_TimeEnd = CmpDayHour(table[i][3], table[i][1]),
                                 VC_Theme = table[i][4],
-                                VC_Names = new ObservableCollection<string>(NamesArray),
-                                VC_Names_For_Content = new ObservableCollection<string>(NamesArray),
+                                VC_Names = NamesArray,
+                                VC_Names_For_Content = NamesArray,
                                 OperPersonal = true,
-                                CloseConference = true
+                                CloseConference = true,
+                                Escort = false
                             });
                         }
 

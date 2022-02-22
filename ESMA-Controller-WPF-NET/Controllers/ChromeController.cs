@@ -1,23 +1,17 @@
 ﻿using ESMA.DataCollections;
-using ESMA.DataLoaders;
-using ESMA.ViewModel;
-using MyLibrary;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace ESMA.Chromedriver
 {
@@ -26,8 +20,7 @@ namespace ESMA.Chromedriver
         public string Login { get; set; }
         public string Password { get; set; }
         public int CurrentTableIndex { get; set; }
-
-        protected string[] NamesArray { get; set; }
+        protected ObservableCollection<EmpUnit> NamesArray { get; set; }
 
         protected WebDriverWait webDriverWait;
         protected IWebDriver webDriver;
@@ -36,12 +29,25 @@ namespace ESMA.Chromedriver
 
         public ChromeController()
         {
-            NamesArray = File.ReadAllLines(ConfigData.NamesListFile);
+            dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+            string file = t["EmpListFile"];
+
+            var list = new EmpList(file);
+
+            var newList = new ObservableCollection<EmpUnit>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsChecked)
+                {
+                    newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                }
+            }
+
+            NamesArray = newList;
 
             cds = ChromeDriverService.CreateDefaultService();
             chromeOptions = new ChromeOptions();
-
-            dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
 
             if (Convert.ToBoolean(t["SilentMode"]))
             {

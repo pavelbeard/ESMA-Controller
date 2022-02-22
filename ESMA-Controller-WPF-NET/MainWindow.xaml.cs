@@ -6,15 +6,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Threading;
-using Process = ESMA.ViewModel.Process;
+using Process = ESMA.DataCollections.CoreDataCollections.Process;
 using ESMA.ViewModel;
 using System.Collections.Generic;
 using MyLibrary;
 using System.IO;
-using Newtonsoft.Json;
-using System.Text;
-using System.Security.AccessControl;
 using ESMA.ChangesCloser;
+using ESMA.DataCollections.CoreDataCollections;
 
 namespace ESMA
 {
@@ -26,7 +24,7 @@ namespace ESMA
         public BindingList<VideoConference> videoList;
         public BindingList<Changes> changesList;
         public BindingList<Process> processList;
-        public BindingList<CTC> ctcList;
+        public BindingList<ChangesCreate> chCreateList;
         public BindingList<PlanCoordinator> pcList;
         public BindingList<ChangesCloserElement> cceList;
 
@@ -48,15 +46,15 @@ namespace ESMA
                 C.Header = "ЗИ\n";
                 P.Header = "ГТП\n";
                 CC.Header = "Создание ЗИ\n";
-                PC.Header = "Согласование \nсут.плана (Бета-версия)";
-                CTCl.Header = "Уничтожение ЗИ (Бета-версия)";
+                PC.Header = "Согласование \nсут.плана";
+                CTCl.Header = "Уничтожение ЗИ";
 
                 IData.Window = this;
 
                 Conference.ItemsSource = videoList = new BindingList<VideoConference>();
                 Changes.ItemsSource = changesList = new BindingList<Changes>();
                 Process.ItemsSource = processList = new BindingList<Process>();
-                ChangesCreate.ItemsSource = ctcList = new BindingList<CTC>();
+                ChangesCreate.ItemsSource = chCreateList = new BindingList<ChangesCreate>();
                 pcList = new BindingList<PlanCoordinator>();
                 ChangesClose.ItemsSource = cceList = new BindingList<ChangesCloserElement>();
 
@@ -139,7 +137,6 @@ namespace ESMA
             }
             return null;
         }
-
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (Height > SystemParameters.MaximizedPrimaryScreenHeight - 15 || WindowState == WindowState.Maximized)
@@ -153,16 +150,19 @@ namespace ESMA
                 Col1.Width = new GridLength(210, GridUnitType.Pixel);
             }
         }
-
         private void window_Closed(object sender, EventArgs e)
         {
             var processes = System.Diagnostics.Process.GetProcessesByName("EXCEL.EXE");
             foreach (var p in processes)
             {
-                p.Close();
+                p?.Close();
+            }
+            processes = System.Diagnostics.Process.GetProcessesByName("chromedriver.exe");
+            foreach (var p in processes)
+            {
+                p?.Close();
             }
         }
-
         private void modulesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             AppViewModel.MwCurrentTab = modulesList.SelectedIndex;

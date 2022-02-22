@@ -1,6 +1,8 @@
 ﻿using ESMA.ChangesCloser;
 using ESMA.Chromedriver;
 using ESMA.Controllers;
+using ESMA.DataCollections;
+using ESMA.DataCollections.CoreDataCollections;
 using ESMA.DataLoaders;
 using ESMA.ExcelData;
 using Microsoft.Win32;
@@ -23,6 +25,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using VideoConference = ESMA.DataCollections.CoreDataCollections.VideoConference;
 
 namespace ESMA.ViewModel
 {
@@ -38,47 +41,126 @@ namespace ESMA.ViewModel
 
         private VideoConference AddConference
         {
-            get => new VideoConference
+            get
             {
-                IdConference = 0,
-                VC_Theme = "null",
-                VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
-                VC_TimeStart = DateTime.Parse("00:00"),
-                VC_TimeEnd = DateTime.Parse("00:00"),
-                VC_Job = "null",
-                VC_Names = new ObservableCollection<string>(ConfigData.NamesList),
-                VC_Names_For_Content = new ObservableCollection<string>(ConfigData.NamesList),
-                OperPersonal = true,
-                CloseConference = true
-            };
+                try
+                {
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
+                    }
+
+                    return new VideoConference
+                    {
+                        IdConference = 0,
+                        VC_Theme = "null",
+                        VC_Date = DateTime.Parse(DateTime.Now.ToString("D")),
+                        VC_TimeStart = DateTime.Parse("00:00"),
+                        VC_TimeEnd = DateTime.Parse("00:00"),
+                        VC_Job = "null",
+                        VC_Names = newList,
+                        VC_Names_For_Content = newList,
+                        OperPersonal = true,
+                        CloseConference = true,
+                        Escort = false
+                    };
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
+            }
         }
         private Changes AddChanges
         {
-            get => new Changes
+            get
             {
-                IdChanges = 0,
-                C_Description = "null",
-                C_TimeStart = DateTime.Parse("00:00"),
-                C_TimeEnd = DateTime.Parse("00:00"),
-                C_Job = "null",
-                C_Names = new ObservableCollection<string>(ConfigData.NamesList)
-            };
+                try
+                {
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
+                    }
+
+                    return new Changes
+                    {
+                        IdChanges = 0,
+                        C_Description = "null",
+                        C_TimeStart = DateTime.Parse("00:00"),
+                        C_TimeEnd = DateTime.Parse("00:00"),
+                        C_Job = "null",
+                        C_Names = newList
+                    };
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
+            }
         }
         private Process AddProcess
         {
-            get => new Process
+            get 
             {
-                IdProcess = 0,
-                P_Description = "null",
-                P_TimeStart = DateTime.Parse("00:00"),
-                P_Job = "null",
-                P_Event = "null",
-                P_Names = new ObservableCollection<string>(ConfigData.NamesList)
-            };
+                try
+                {
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
+                    }
+
+                    return new Process
+                    {
+                        IdProcess = 0,
+                        P_Description = "null",
+                        P_TimeStart = DateTime.Parse("00:00"),
+                        P_Job = "null",
+                        P_Event = "null",
+                        P_Names = newList
+                    };
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Файл не найден, либо отсутствует путь к нему в файле конфигурации");
+                    return null;
+                }
+            } 
         }
-        private CTC AddCTC
+        private ChangesCreate AddCTC
         {
-            get => new CTC
+            get => new ChangesCreate
             {
                 IdCTC = 0,
                 CTC_Description = "null",
@@ -185,12 +267,12 @@ namespace ESMA.ViewModel
                             Password = t["Password"],
                             CurrentTableIndex = MwCurrentTab
                         };
-                        var ctcLoad = await cc.LoadDataAsync<CTC>(scanProgress);
+                        var ctcLoad = await cc.LoadDataAsync<ChangesCreate>(scanProgress);
                         if (ctcLoad != null)
                         {
                             foreach (var item in ctcLoad)
                             {
-                                IData.Window.ctcList.Add(item);
+                                IData.Window.chCreateList.Add(item);
                             }
                         }
                     }
@@ -234,7 +316,7 @@ namespace ESMA.ViewModel
                         0 => IData.Window?.videoList?.Count == 0 && check,
                         1 => IData.Window?.changesList?.Count == 0 && check,
                         2 => IData.Window?.processList?.Count == 0 && check,
-                        3 => IData.Window?.ctcList?.Count == 0 && check,
+                        3 => IData.Window?.chCreateList?.Count == 0 && check,
                         5 => IData.Window?.cceList?.Count == 0 && check,
                         _ => false,
                     };
@@ -252,7 +334,7 @@ namespace ESMA.ViewModel
                     IData.Window.videoList?.Clear();
                     IData.Window.changesList?.Clear();
                     IData.Window.processList?.Clear();
-                    IData.Window.ctcList?.Clear();
+                    IData.Window.chCreateList?.Clear();
                     IData.Window.cceList?.Clear();
                 }
                 var newTask = new NewTaskWindow
@@ -282,7 +364,7 @@ namespace ESMA.ViewModel
                             Conferences = new BindingList<VideoConference>(),
                             Changes = new BindingList<Changes>(),
                             Processes = new BindingList<Process>(),
-                            CTCs = new BindingList<CTC>(),
+                            CTCs = new BindingList<ChangesCreate>(),
                             ChangesCloserElement = new BindingList<ChangesCloserElement>()
                         }));
 
@@ -363,7 +445,7 @@ namespace ESMA.ViewModel
                         Conferences = IData.Window.videoList,
                         Changes = IData.Window.changesList,
                         Processes = IData.Window.processList,
-                        CTCs = IData.Window.ctcList,
+                        CTCs = IData.Window.chCreateList,
                         ChangesCloserElements = IData.Window.cceList
                     });
 
@@ -392,7 +474,7 @@ namespace ESMA.ViewModel
                                 Conferences = IData.Window.videoList,
                                 Changes = IData.Window.changesList,
                                 Processes = IData.Window.processList,
-                                CTSs = IData.Window.ctcList,
+                                CTSs = IData.Window.chCreateList,
                                 ChangesCloserElements = IData.Window.cceList
                             });
 
@@ -436,7 +518,7 @@ namespace ESMA.ViewModel
                     case 0: IData.Window.videoList.Add(AddConference); break;
                     case 1: IData.Window.changesList.Add(AddChanges); break;
                     case 2: IData.Window.processList.Add(AddProcess); break;
-                    case 3: IData.Window.ctcList.Add(AddCTC); break;
+                    case 3: IData.Window.chCreateList.Add(AddCTC); break;
                     case 4: IData.Window.pcList.Add(AddPC); break;
                     case 5: IData.Window.cceList.Add(new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" }); break;
                     default: break;
@@ -472,13 +554,13 @@ namespace ESMA.ViewModel
                                 IData.Window.processList.Insert(IData.Window.Process.SelectedIndex, AddProcess);
                             break;
                         case 3:
-                            if (IData.Window.ctcList.Count < 1)
-                                IData.Window.ctcList.Add(AddCTC);
+                            if (IData.Window.chCreateList.Count < 1)
+                                IData.Window.chCreateList.Add(AddCTC);
                             else
-                                IData.Window.ctcList.Insert(IData.Window.ChangesCreate.SelectedIndex, AddCTC);
+                                IData.Window.chCreateList.Insert(IData.Window.ChangesCreate.SelectedIndex, AddCTC);
                             break;
                         case 5:
-                            if (IData.Window.ctcList.Count < 1)
+                            if (IData.Window.chCreateList.Count < 1)
                                 IData.Window.cceList.Add(new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" });
                             else
                                 IData.Window.cceList.Insert(IData.Window.ChangesClose.SelectedIndex, new ChangesCloserElement { IdCCE = 0, CCE_Description = "null" });
@@ -514,8 +596,8 @@ namespace ESMA.ViewModel
                             IData.Window.processList.RemoveAt(IData.Window.Process.SelectedIndex);
                         break;
                     case 3:
-                        if (IData.Window.ctcList.Count > 0)
-                            IData.Window.ctcList.RemoveAt(IData.Window.ChangesCreate.SelectedIndex);
+                        if (IData.Window.chCreateList.Count > 0)
+                            IData.Window.chCreateList.RemoveAt(IData.Window.ChangesCreate.SelectedIndex);
                         break;
                     case 5:
                         if (IData.Window.cceList.Count > 0)
@@ -534,7 +616,7 @@ namespace ESMA.ViewModel
                         0 => IData.Window?.videoList?.Count > 0,
                         1 => IData.Window?.changesList?.Count > 0,
                         2 => IData.Window?.processList?.Count > 0,
-                        3 => IData.Window?.ctcList?.Count > 0,
+                        3 => IData.Window?.chCreateList?.Count > 0,
                         5 => IData.Window?.cceList?.Count > 0,
                         _ => false,
                     };
@@ -604,7 +686,7 @@ namespace ESMA.ViewModel
                     }
                     if (MwCurrentTab == 3)
                     {
-                        IData.CTCs = IData.Window.ctcList;
+                        IData.CTCs = IData.Window.chCreateList;
                         ChangesCreatorController cc = new()
                         {
                             Login = t["Login"],
@@ -671,7 +753,7 @@ namespace ESMA.ViewModel
                     0 => IData.Window?.videoList?.Count > 0 && check,
                     1 => IData.Window?.changesList?.Count > 0 && check,
                     2 => IData.Window?.processList?.Count > 0 && check,
-                    3 => IData.Window?.ctcList?.Count > 0 && check,
+                    3 => IData.Window?.chCreateList?.Count > 0 && check,
                     4 => IData.Window?.pcList?.Count == 0,
                     5 => IData.Window?.cceList?.Count > 0 && check,
                     _ => false,
@@ -734,7 +816,7 @@ namespace ESMA.ViewModel
                         ClearTableInfo("Таблица \"ГТП\"");
                         break;
                     case 3:
-                        IData.Window.ctcList?.Clear();
+                        IData.Window.chCreateList?.Clear();
                         MessageBox.Show("Таблица \"Создание ЗИ\" очищена", "", MessageBoxButton.OK, MessageBoxImage.Information);
                         break;
                     case 4:
@@ -757,7 +839,7 @@ namespace ESMA.ViewModel
                     0 => IData.Window?.videoList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     1 => IData.Window?.changesList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     2 => IData.Window?.processList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
-                    3 => IData.Window?.ctcList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
+                    3 => IData.Window?.chCreateList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     4 => IData.Window?.pcList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     5 => IData.Window?.cceList?.Count > 0 && IData.Window.ProgressBar_Grid.Visibility == Visibility.Hidden,
                     _ => false,
@@ -781,19 +863,19 @@ namespace ESMA.ViewModel
                     {
                         case 0:
                             {
-                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
-                                IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                                //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names =
+                                //new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
+                                //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                                //new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             }
                             break;
                         case 1:
-                            IData.Window.changesList[IData.Window.Changes.SelectedIndex].C_Names =
-                               new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.changesList[IData.Window.Changes.SelectedIndex].C_Names =
+                            //   new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         case 2:
-                            IData.Window.processList[IData.Window.Process.SelectedIndex].P_Names =
-                               new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.processList[IData.Window.Process.SelectedIndex].P_Names =
+                            //   new ObservableCollection<EmpUnit>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                         default:
                             break;
@@ -817,40 +899,14 @@ namespace ESMA.ViewModel
                     switch (MwCurrentTab)
                     {
                         case 0:
-                            IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
-                                new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
+                            //IData.Window.videoList[IData.Window.Conference.SelectedIndex].VC_Names_For_Content =
+                            //    new ObservableCollection<string>(File.ReadAllLines(openFileDialog.FileName));
                             break;
                     }
                 }
             });
         }
-        public RelayCommand ChangePrimNames
-        {
-            get => new RelayCommand(async obj =>
-            {
-                System.Diagnostics.Process p = null;
-
-                if (Directory.Exists(@"C:\Program Files\Notepad++") && ConfigData.NamesListFile != "null")
-                    p = System.Diagnostics.Process.Start(@"C:\Program Files\Notepad++\notepad++.exe", ConfigData.NamesListFile);
-                else
-                    p = System.Diagnostics.Process.Start("notepad.exe", ConfigData.NamesListFile);
-
-                await Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        if (p.HasExited)
-                        {
-                            IData.CsWindow.Dispatcher.Invoke(() =>
-                            {
-                                IData.CsWindow.namesBox.ItemsSource = new ObservableCollection<string>(ConfigData.NamesList);
-                            });
-                            break;
-                        }
-                    }
-                });
-            });
-        }
+        //change prim names
         public RelayCommand OpenConferenceSettings
         {
             get => new RelayCommand(obj =>
@@ -864,61 +920,10 @@ namespace ESMA.ViewModel
             },
             obj => IData.Window?.modulesList.IsVisible ?? false);
         }
-        public RelayCommand Accept
-        {
-            get => new RelayCommand(obj =>
-            {
-                if ((IData.CsWindow.StartDate.Text != "" && IData.CsWindow.EndDate.Text != "")
-                || (IData.CsWindow.StartDate.Text != "" || IData.CsWindow.EndDate.Text != ""))
-                {
-                    IData.StartDateValue = DateTime.Parse(IData.CsWindow.StartDate.Text);
-                    IData.EndDateValue = DateTime.Parse(IData.CsWindow.EndDate.Text);
-                    SettingsInfo("Применено");
-                }
-                else
-                {
-                    SettingsInfo("Пусто", true);
-                }
-            });
-        }
-        public RelayCommand ResetTime
-        {
-            get => new RelayCommand(obj =>
-            {
-                IData.CsWindow.StartDate.Text = DateTime.Now.ToString();
-                IData.CsWindow.EndDate.Text = DateTime.Now.ToString();
-                IData.StartDateValue = DateTime.Parse(IData.CsWindow.StartDate.Text);
-                IData.EndDateValue = DateTime.Parse(IData.CsWindow.EndDate.Text);
-                SettingsInfo("Время сброшено");
-            });
-        }
-        public RelayCommand Authorization
-        {
-            get => new RelayCommand(async obj =>
-            {
-                string login = IData.CsWindow.loginField.Text;
-                string password = IData.CsWindow.passwordField.Password;
-                if (login != "" && password != "")
-                {
-                    await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string> { ["Login"] = login, ["Password"] = password });
-                    MessageBox.Show("Авторизация завершена", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Пустые поля", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
-            });
-        }
-        public RelayCommand ResetAuthorizationData
-        {
-            get => new RelayCommand(async obj =>
-            {
-                await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, string> { ["Login"] = default, ["Password"] = default });
-                IData.CsWindow.loginField.Text = default;
-                IData.CsWindow.passwordField.Password = default;
-            });
-        }
+        //accept here
+        //reset time here
+        //auth here
+        //reset auth here
         public RelayCommand ResetData
         {
             get => new RelayCommand(async obj =>
@@ -926,14 +931,7 @@ namespace ESMA.ViewModel
                 //await js.EditFileAsync(ConfigData.ConfigurationFilePath, new Dictionary<string, T>)
             });
         }
-        public RelayCommand SilentMode
-        {
-            get => new RelayCommand(obj =>
-            {
-                bool t = (bool)IData.CsWindow.SilentModeCheckBox.IsChecked;
-                js.EditFile(ConfigData.ConfigurationFilePath, new Dictionary<string, bool> { ["SilentMode"] = t });
-            });
-        }
+        //silent mode
         public RelayCommand BrowseFolder
         {
             get => new RelayCommand(obj =>
@@ -980,18 +978,23 @@ namespace ESMA.ViewModel
 
                         for (int i = 0; i < IData.Window.changesList.Count; i++)
                         {
-                            for (int j = 0; j < IData.Window.changesList[i].C_Names.Count; j++)
+                            var list = IData.Window.changesList[i].C_Names;
+                            foreach (var name in list)
                             {
-                                reportData.Emps.Add(IData.Window.changesList[i].C_Names[j]);
-                            }
+                                if (name.IsChecked)
+                                {
+                                    reportData.Emps.Add(name.Name);
+                                    if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
+                                    {
+                                        reportData.Lrps.Add("0000");
 
-                            if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
-                            {
-                                reportData.Lrps.Add("0000");
-                            }
-                            else
-                            {
-                                reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
+                                    }
+                                    else
+                                    {
+                                        reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
+                                    }
+                                }
+                                
                             }
                         }
 
@@ -1021,16 +1024,7 @@ namespace ESMA.ViewModel
                 IData.Window.Dispatcher.Invoke(() => IData.Window.StatusBar.Content = "");
             });
         }
-        public static async void SettingsInfo(string info, bool @void = false)
-        {
-            if (@void)
-            {
-                SystemSounds.Hand.Play();
-            }
-            IData.CsWindow.infoLabel.Content = info;
-            await Task.Delay(4000);
-            IData.CsWindow.infoLabel.Content = "";
-        }
+        //settings info
         public static async void MainWindowInfo(string info, bool @void = false)
         {
             if (@void)
@@ -1083,157 +1077,6 @@ namespace ESMA.ViewModel
             {
                 p.Close();
             }
-        }
-    }
-
-    public class VideoConference : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> vc_Names;
-        private ObservableCollection<string> vc_Names_for_content;
-        private string vc_Status;
-
-        public int IdConference { get; set; }
-        public string VC_Theme { get; set; }
-        public DateTime VC_Date { get; set; }
-        public DateTime VC_TimeStart { get; set; }
-        public DateTime VC_TimeEnd { get; set; }
-        public string VC_Job { get; set; }
-        public bool OperPersonal { get; set; }
-        public ObservableCollection<string> VC_Names
-        {
-            get => vc_Names;
-            set
-            {
-                vc_Names = value;
-                OnPropertyChanged("VC_Names");
-            }
-        }
-        public ObservableCollection<string> VC_Names_For_Content
-        {
-            get => vc_Names_for_content;
-            set
-            {
-                vc_Names_for_content = value;
-                OnPropertyChanged("VC_Names_For_Content");
-            }
-        }
-        public bool CloseConference { get; set; }
-        public string CloseCode { get; set; }
-        public string VC_Status
-        {
-            get => vc_Status;
-            set
-            {
-                vc_Status = value;
-                OnPropertyChanged("VC_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-    public class Changes : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> c_Names;
-        private string c_Status;
-
-        public int IdChanges { get; set; }
-        public string C_Description { get; set; }
-        public DateTime C_TimeStart { get; set; }
-        public DateTime C_TimeEnd { get; set; }
-        public string C_Job { get; set; }
-        public ObservableCollection<string> C_Names
-        {
-            get { return c_Names; }
-            set
-            {
-                c_Names = value;
-                OnPropertyChanged("C_Names");
-            }
-        }
-        public string C_Status
-        {
-            get => c_Status;
-            set
-            {
-                c_Status = value;
-                OnPropertyChanged("C_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-    public class Process : INotifyPropertyChanged
-    {
-        private ObservableCollection<string> p_Names;
-        private string p_Status;
-
-        public int IdProcess { get; set; }
-        public string P_Description { get; set; }
-        public DateTime P_TimeStart { get; set; }
-        public string P_Job { get; set; }
-        public string P_Event { get; set; }
-        public ObservableCollection<string> P_Names
-        {
-            get => p_Names;
-            set
-            {
-                p_Names = value;
-                OnPropertyChanged("P_Names");
-            }
-        }
-        public string P_Status
-        {
-            get => p_Status;
-            set
-            {
-                p_Status = value;
-                OnPropertyChanged("P_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-
-    public class CTC : INotifyPropertyChanged
-    {
-        private string ctc_Status;
-
-        public int IdCTC { get; set; }
-        public string CTC_Description { get; set; }
-        public DateTime CTC_DateStart { get; set; }
-        public DateTime CTC_DateEnd { get; set; }
-        public DateTime CTC_TimeStart { get; set; }
-        public DateTime CTC_TimeEnd { get; set; }
-        public string CTC_Status
-        {
-            get => ctc_Status;
-            set
-            {
-                ctc_Status = value;
-                OnPropertyChanged("CTC_Status");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 

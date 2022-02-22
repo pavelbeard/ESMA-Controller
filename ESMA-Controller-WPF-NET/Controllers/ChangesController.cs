@@ -51,7 +51,7 @@ namespace ESMA.Controllers
 
                             //}--
                             //Вставка имени в отчет
-                            reportData.Emps.Add(IData.Changes[i].C_Names[j]);
+                            //reportData.Emps.Add(IData.Changes[i].C_Names[j]);
 
                             progressPercentage += 1.0 / total * 100.0;
                             progress.Report(progressPercentage);
@@ -145,9 +145,21 @@ namespace ESMA.Controllers
                             NewSession();
                             ChangeFrame();
 
+                            //формирование нового списка имен на основе отмеченных
+                            var names = IData.Changes[i].C_Names;
+                            var newNames = new List<string>();
+
+                            for(int j = 0; j < names.Count; j++)
+                            {
+                                if(names[j].IsChecked)
+                                {
+                                    newNames.Add(names[j].Name);
+                                }
+                            }
+
                             //Внесение опер персонала
                             //--{
-                            for (int j = 0; j < IData.Changes[i].C_Names.Count; j++)
+                            for (int j = 0; j < newNames.Count; j++)
                             {
                                 IData.Window.Dispatcher.Invoke(()
                                         => IData.Window.Info.Text
@@ -215,7 +227,7 @@ namespace ESMA.Controllers
                                 }
 
                                 webDriver.FindElement(By.XPath("//input[@name='p_value1']")).Clear();
-                                webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(IData.Changes[i].C_Names[j]);
+                                webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(newNames[j]);
                                 webDriver.FindElement(By.XPath("//input[@name='bt_where']")).Click();
                                 webDriver.FindElement(By.XPath("//td//a")).Click();
                                 // }--
@@ -241,7 +253,7 @@ namespace ESMA.Controllers
                                 webDriver.SwitchTo().Frame(webDriver.FindElement(By.Name("frame_2")));
                                 //}--
                                 //Вставка имени в отчет
-                                reportData.Emps.Add(IData.Changes[i].C_Names[j]);
+                                reportData.Emps.Add(newNames[j]);
 
                                 progressPercentage += 1.0 / total * 100.0;
                                 progress.Report(progressPercentage);

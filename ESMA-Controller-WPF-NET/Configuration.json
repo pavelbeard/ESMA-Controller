@@ -10,5 +10,7 @@
   "InNight": null,
   "SNight": null,
   "RefrEmp":  null,
-  "Boss":  null
+  "Boss": null,
+  "EmpListFile": null,
+  "SwitchFile":  "0"
 }
