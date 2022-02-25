@@ -162,6 +162,22 @@ namespace ESMA.DataLoaders
 
                         var toLoad = new List<VideoConference>();
 
+                        //НЕЗАВИСИМЫЕ СПИСКИ
+                        dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                        string file = t["EmpListFile"];
+
+                        var list = new EmpList(file);
+
+                        var newList = new ObservableCollection<EmpUnit>();
+
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            if (list[i].IsChecked)
+                            {
+                                newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                            }
+                        }
+
                         for (int i = 0; i < table.Count; i++)
                         {
                             toLoad.Add(new VideoConference
@@ -171,8 +187,8 @@ namespace ESMA.DataLoaders
                                 VC_TimeStart = DateTime.Parse(table[i][2]),
                                 VC_TimeEnd = CmpDayHour(table[i][3], table[i][1]),
                                 VC_Theme = table[i][4],
-                                VC_Names = NamesArray,
-                                VC_Names_For_Content = NamesArray,
+                                VC_Names = newList,
+                                VC_Names_For_Content = newList,
                                 OperPersonal = true,
                                 CloseConference = true,
                                 Escort = false

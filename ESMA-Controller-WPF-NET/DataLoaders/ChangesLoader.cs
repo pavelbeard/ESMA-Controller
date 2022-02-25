@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using ESMA.DataCollections.CoreDataCollections;
 using ESMA.DataCollections;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ESMA.DataLoaders
 {
@@ -49,6 +51,21 @@ namespace ESMA.DataLoaders
 
                     var toLoad = new List<Changes>();
 
+                    //-//
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
+                    }
 
 
                     for (int i = 0; i < table[0].Count; i++)
@@ -59,7 +76,7 @@ namespace ESMA.DataLoaders
                             C_Description = $"{table[2][i]}:{table[1][i]}",
                             C_TimeStart = DateTime.Parse("00:00"),
                             C_TimeEnd = DateTime.Parse("00:00"),
-                            C_Names = new ObservableCollection<EmpUnit>(NamesArray)
+                            C_Names = newList
                         }); ;
                     }
                     progress.Report(75);

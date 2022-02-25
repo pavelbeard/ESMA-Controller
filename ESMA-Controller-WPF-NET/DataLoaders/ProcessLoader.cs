@@ -1,11 +1,14 @@
 ﻿using ESMA.Chromedriver;
+using ESMA.DataCollections;
 using ESMA.DataCollections.CoreDataCollections;
 using ESMA.ViewModel;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -45,6 +48,22 @@ namespace ESMA.DataLoaders
 
                     var toLoad = new List<Process>();
 
+                    //независимые списки имен
+                    dynamic t = JsonConvert.DeserializeObject(File.ReadAllText(ConfigData.ConfigurationFilePath));
+                    string file = t["EmpListFile"];
+
+                    var list = new EmpList(file);
+
+                    var newList = new ObservableCollection<EmpUnit>();
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if (list[i].IsChecked)
+                        {
+                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                        }
+                    }
+
                     for (int i = 0; i < table[0].Count; i++)
                     {
                         toLoad.Add(new Process
@@ -53,7 +72,7 @@ namespace ESMA.DataLoaders
                             P_Description = table[1][i],
                             P_TimeStart = DateTime.Parse("00:00"),
                             P_Event = table[2][i],
-                            P_Names = NamesArray
+                            P_Names = newList
                         });
                     }
 
