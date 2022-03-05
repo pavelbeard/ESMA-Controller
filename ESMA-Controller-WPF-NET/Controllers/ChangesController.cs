@@ -20,7 +20,6 @@ namespace ESMA.Controllers
         {
             return Task.Run(() =>
             {
-                ReportData reportData = new();
                 int attempts = 0;
                 var progressPercentage = 0.0;
 
@@ -47,18 +46,13 @@ namespace ESMA.Controllers
                                     => IData.Window.Info.Text
                                     = $"{IData.Changes[i].IdChanges}\n" +
                                       $"{IData.Changes[i].C_Description}\n" +
-                                      $"{IData.Changes[i].C_Names[j]}");
+                                      $"{IData.Changes[i].C_Names[j].Name}");
 
                             //}--
-                            //Вставка имени в отчет
-                            //reportData.Emps.Add(IData.Changes[i].C_Names[j]);
-
                             progressPercentage += 1.0 / total * 100.0;
                             progress.Report(progressPercentage);
                             Thread.Sleep(700);
                         }
-                        //Вставка работы в отчет
-                        reportData.Lrps.Add(IData.Changes[i].IdChanges.ToString());
                         //}--
                         Thread.Sleep(500);
                         IData.Changes[i].C_Status = "Завершено";
@@ -86,7 +80,6 @@ namespace ESMA.Controllers
                         goto label1;
                     }
                 }
-                ReportData.Report = reportData;
             });
         }
 
@@ -94,7 +87,6 @@ namespace ESMA.Controllers
         {
             return Task.Run(() =>
             {
-                ReportData reportData = new();
                 int attempts = 0;
                 var progressPercentage = 0.0;
                 var pairs = new Dictionary<int, string>
@@ -172,8 +164,8 @@ namespace ESMA.Controllers
                                 string[] frames = { "//*[@id=\"COLROW3\"]/td/img[1]", "//*[@id=\"COLROW4\"]/td/img[1]" };
                                 string[] windows = { $"javascript:objdCalendar.dateSelected={DateTime.Now.Day};objdCalendar.selDate();", $"javascript:dateSelected={DateTime.Now.Day};closeCalendar();" };
 
-                                string[] h = { IData.Changes[i].C_TimeStart.ToString("HH"), IData.Changes[i].C_TimeEnd.ToString("HH") };
-                                string[] m = { IData.Changes[i].C_TimeStart.ToString("mm"), IData.Changes[i].C_TimeEnd.ToString("mm") };
+                                string[] h = { IData.Changes[i].C_Names[j].TimeStart.ToString("HH"), IData.Changes[i].C_Names[j].TimeEnd.ToString("HH") };
+                                string[] m = { IData.Changes[i].C_Names[j].TimeStart.ToString("mm"), IData.Changes[i].C_Names[j].TimeEnd.ToString("mm") };
 
                                 webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
                                 //Календарь
@@ -252,15 +244,10 @@ namespace ESMA.Controllers
                                 webDriver.SwitchTo().ParentFrame();
                                 webDriver.SwitchTo().Frame(webDriver.FindElement(By.Name("frame_2")));
                                 //}--
-                                //Вставка имени в отчет
-                                reportData.Emps.Add(newNames[j]);
-
                                 progressPercentage += 1.0 / total * 100.0;
                                 progress.Report(progressPercentage);
                                 Thread.Sleep(200);
                             }
-                            //Вставка работы в отчет
-                            reportData.Lrps.Add(IData.Changes[i].IdChanges.ToString());
                             //}--
                             Thread.Sleep(500);
                             IData.Changes[i].C_Status = "Завершено";
@@ -286,7 +273,6 @@ namespace ESMA.Controllers
                         }
                     }
                 }
-                ReportData.Report = reportData;
             });
         }
     }

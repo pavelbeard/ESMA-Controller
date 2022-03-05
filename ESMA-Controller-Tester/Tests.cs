@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 using System.Linq;
+using System;
 
 namespace ESMA_Controller_Tester
 {
@@ -58,7 +59,36 @@ namespace ESMA_Controller_Tester
 
             Assert.AreEqual(true, vcct.RunTest());
         }
+        [Test]
+        public void TestChangesController()
+        {
+            var listDt = new List<DateTime>();
 
+            for (int i = 0; i < 13; i++)
+            {
+                listDt.Add(DateTime.Parse("00:00"));
+            }
+
+            var list1 = new EmpListChanges(ConfigData.NamesListFileJSON, listDt, listDt);
+            list1[1].IsChecked = true; list1[1].TimeStart = DateTime.Parse("14:55"); list1[1].TimeEnd = DateTime.Parse("15:30");
+            list1[2].IsChecked = true; list1[2].TimeStart = DateTime.Parse("14:25"); list1[2].TimeEnd = DateTime.Parse("15:00");
+            list1[3].IsChecked = true; list1[3].TimeStart = DateTime.Parse("14:15"); list1[3].TimeEnd = DateTime.Parse("15:12");
+
+            var list2 = new EmpListChanges(ConfigData.NamesListFileJSON, listDt, listDt);
+            list2[4].IsChecked = true; list2[4].TimeStart = DateTime.Parse("13:55"); list2[4].TimeEnd = DateTime.Parse("14:30");
+            list2[5].IsChecked = true; list2[5].TimeStart = DateTime.Parse("13:25"); list2[5].TimeEnd = DateTime.Parse("14:00");
+            list2[6].IsChecked = true; list2[6].TimeStart = DateTime.Parse("13:15"); list2[6].TimeEnd = DateTime.Parse("14:12");
+
+            var list3 = new EmpListChanges(ConfigData.NamesListFileJSON, listDt, listDt);
+            list3[7].IsChecked = true; list3[7].TimeStart = DateTime.Parse("12:55"); list3[7].TimeEnd = DateTime.Parse("13:30");
+            list3[8].IsChecked = true; list3[8].TimeStart = DateTime.Parse("12:25"); list3[8].TimeEnd = DateTime.Parse("13:00");
+            list3[9].IsChecked = true; list3[9].TimeStart = DateTime.Parse("12:15"); list3[9].TimeEnd = DateTime.Parse("13:12");
+
+            ChangesControllerTest cct = new();
+            cct.List = new ObservableCollection<EmpListChanges> { list1, list2, list3 };
+
+            Assert.AreEqual(true, cct.RunTest());
+        }
         [Test]
         public void TestDictionary()
         {
@@ -129,42 +159,6 @@ namespace ESMA_Controller_Tester
                     System.Console.WriteLine($"Value: {d.Value[i]}");
                 }
             }
-
-            //на каких строчках сидят эти фамилии
-            //var tuple = (Rows: new List<int>(), Emps: new List<string>());
-
-            //for (int empsCounter = 0; empsCounter < names.Count; empsCounter++)
-            //{
-            //    for (int row = 3; row <= 14; row++)
-            //    {
-            //        if (emps[row - 3] == "Жаворонкина Н.В.")
-            //        {
-            //            System.Console.WriteLine("в ночь");
-            //        }
-            //        if (emps[row - 3] == "Степачева И.Н.")
-            //        {
-            //            System.Console.WriteLine("с ночи");
-            //            System.Console.WriteLine("выполнено");
-            //            System.Console.WriteLine("т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4");
-            //        }
-            //        //код, который выводит имена в соответствии с ключами
-            //        if (emps[row - 3] == names[empsCounter])
-            //        {
-            //            System.Console.WriteLine();
-            //            System.Console.WriteLine($"E{row}:E{row} выполнено"); ;
-            //            System.Console.WriteLine($"D{row}:D{row} т.к 4.5, 8.4, 11, 6.9, 13, 4, 20,\n24, 3, 2, 8, 5.9, 5, 5.13, п14.1 ,14.4"); ;
-            //            tuple.Rows.Add(row);
-            //            tuple.Emps.Add(names[empsCounter]);
-            //            System.Console.WriteLine();
-            //        }
-            //    }
-            //}
-
-            ////раскидываем номера лрп по ячейкам
-            //for (int i = 0; i < tuple.Rows.Count; i++)
-            //{
-
-            //}
         }
     }
 }

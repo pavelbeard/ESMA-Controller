@@ -54,14 +54,19 @@ namespace ESMA.DataLoaders
 
                     var list = new EmpList(file);
 
-                    var newList = new ObservableCollection<EmpUnit>();
-
-                    for (int i = 0; i < list.Count; i++)
+                    ObservableCollection<EmpUnit> NewList()
                     {
-                        if (list[i].IsChecked)
+                        var newList = new ObservableCollection<EmpUnit>();
+
+                        for (int i = 0; i < list.Count; i++)
                         {
-                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                            if (list[i].IsChecked)
+                            {
+                                newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                            }
                         }
+
+                        return newList;
                     }
 
                     for (int i = 0; i < table[0].Count; i++)
@@ -72,7 +77,7 @@ namespace ESMA.DataLoaders
                             P_Description = table[1][i],
                             P_TimeStart = DateTime.Parse("00:00"),
                             P_Event = table[2][i],
-                            P_Names = newList
+                            P_Names = NewList()
                         });
                     }
 

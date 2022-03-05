@@ -430,10 +430,6 @@
                                         <Expander 
                                             Header="Список сотрудников">
                                             <StackPanel>
-                                                <!--<Button 
-                                                    Content="Изменить ФИО&#10;для сопровождения"
-                                                    DataContext="{StaticResource ViewModel}"
-                                                    Command="{Binding ChangeNamesNew}"/>-->
                                                 <ListBox 
                                                         ItemsSource="{Binding VC_Names_For_Content}"
                                                         Height="100">
@@ -497,12 +493,12 @@
                             <DataGridTextColumn 
                                 Header="Примечание" 
                                 Binding="{Binding C_Description}"/>
-                            <DataGridTextColumn 
+                            <!--<DataGridTextColumn 
                                 Header="Время начала" 
-                                Binding="{Binding C_TimeStart, StringFormat={}{0:HH:mm}}"/>
+                                Binding=/>
                             <DataGridTextColumn 
                                 Header="Время окончания" 
-                                Binding="{Binding C_TimeEnd, StringFormat={}{0:HH:mm}}"/>
+                                Binding="{Binding C_TimeEnd, StringFormat={}{0:HH:mm}}"/>-->
                             <DataGridComboBoxColumn 
                                 Header="Работы" 
                                 ItemsSource="{StaticResource jobsChanges}" 
@@ -523,9 +519,23 @@
                                                         Height="100">
                                                     <ListBox.ItemTemplate>
                                                         <DataTemplate>
-                                                            <CheckBox
-                                                                IsChecked="{Binding IsChecked}" 
-                                                                Content="{Binding Name}"/>
+                                                            <StackPanel>
+                                                                <CheckBox
+                                                                    IsChecked="{Binding IsChecked}" 
+                                                                    Content="{Binding Name}"/>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Label Content="Время начала:"/>
+                                                                    <TextBox 
+                                                                        Margin="25,0,0,0"
+                                                                        Text="{Binding TimeStart, StringFormat={}{0:HH:mm}}"/>
+                                                                </StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Label Content="Время окончания:"/>
+                                                                    <TextBox
+                                                                        Margin="1,0,0,0"
+                                                                        Text="{Binding TimeEnd, StringFormat={}{0:HH:mm}}"/>
+                                                                </StackPanel>
+                                                            </StackPanel>
                                                         </DataTemplate>
                                                     </ListBox.ItemTemplate>
                                                 </ListBox>

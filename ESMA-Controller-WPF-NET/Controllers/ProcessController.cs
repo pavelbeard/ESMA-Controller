@@ -42,7 +42,7 @@ namespace ESMA.Controllers
                                         => IData.Window.Info.Text
                                         = $"{IData.Processes[i].IdProcess}\n" +
                                           $"{IData.Processes[i].P_Description}\n" +
-                                          $"{IData.Processes[i].P_Names[namesCount]}");
+                                          $"{IData.Processes[i].P_Names[namesCount].Name}");
                             //Новая сессия
                             //-(
                             webDriver = new ChromeDriver(cds, chromeOptions);

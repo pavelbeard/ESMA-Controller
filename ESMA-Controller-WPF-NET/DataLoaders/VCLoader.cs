@@ -168,14 +168,19 @@ namespace ESMA.DataLoaders
 
                         var list = new EmpList(file);
 
-                        var newList = new ObservableCollection<EmpUnit>();
-
-                        for (int i = 0; i < list.Count; i++)
+                        ObservableCollection<EmpUnit> NewList()
                         {
-                            if (list[i].IsChecked)
+                            var newList = new ObservableCollection<EmpUnit>();
+
+                            for (int i = 0; i < list.Count; i++)
                             {
-                                newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                                if (list[i].IsChecked)
+                                {
+                                    newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                                }
                             }
+
+                            return newList;
                         }
 
                         for (int i = 0; i < table.Count; i++)
@@ -187,8 +192,8 @@ namespace ESMA.DataLoaders
                                 VC_TimeStart = DateTime.Parse(table[i][2]),
                                 VC_TimeEnd = CmpDayHour(table[i][3], table[i][1]),
                                 VC_Theme = table[i][4],
-                                VC_Names = newList,
-                                VC_Names_For_Content = newList,
+                                VC_Names = NewList(),
+                                VC_Names_For_Content = NewList(),
                                 OperPersonal = true,
                                 CloseConference = true,
                                 Escort = false

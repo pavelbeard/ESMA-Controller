@@ -93,24 +93,33 @@ namespace ESMA.ViewModel
 
                     var list = new EmpList(file);
 
-                    var newList = new ObservableCollection<EmpUnit>();
-
-                    for (int i = 0; i < list.Count; i++)
+                    ObservableCollection<EmpUnitChanges> NewList(DateTime ts, DateTime te)
                     {
-                        if (list[i].IsChecked)
+                        var newList = new ObservableCollection<EmpUnitChanges>();
+
+                        for (int i = 0; i < list.Count; i++)
                         {
-                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
+                            if (list[i].IsChecked)
+                            {
+                                newList.Add(new EmpUnitChanges
+                                {
+                                    Name = list[i].Name,
+                                    IsChecked = list[i].IsChecked,
+                                    TimeStart = ts,
+                                    TimeEnd = te
+                                });
+                            }
                         }
+
+                        return newList;
                     }
 
                     return new Changes
                     {
                         IdChanges = 0,
                         C_Description = "null",
-                        C_TimeStart = DateTime.Parse("00:00"),
-                        C_TimeEnd = DateTime.Parse("00:00"),
                         C_Job = "null",
-                        C_Names = newList
+                        C_Names = NewList(DateTime.Parse("00:00"), DateTime.Parse("00:00"))
                     };
                 }
                 catch (Exception)
@@ -968,47 +977,32 @@ namespace ESMA.ViewModel
         {
             get => new(obj =>
             {
-                if (ReportData.Report == null)
+                ReportData reportData = new ReportData();
+
+                for (int i = 0; i < IData.Window.changesList.Count; i++)
                 {
-                    if (MessageBox.Show("Программа еще не отработала, вы точно хотите создать отчет?",
-                    "Создать отчет",
-                    MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    var list = IData.Window.changesList[i].C_Names;
+                    foreach (var name in list)
                     {
-                        ReportData reportData = new ReportData();
-
-                        for (int i = 0; i < IData.Window.changesList.Count; i++)
+                        if (name.IsChecked)
                         {
-                            var list = IData.Window.changesList[i].C_Names;
-                            foreach (var name in list)
+                            reportData.Emps.Add(name.Name);
+                            if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
                             {
-                                if (name.IsChecked)
-                                {
-                                    reportData.Emps.Add(name.Name);
-                                    if (IData.Window.changesList[i].IdChanges.ToString().Length < 4)
-                                    {
-                                        reportData.Lrps.Add("0000");
+                                reportData.Lrps.Add("0000");
 
-                                    }
-                                    else
-                                    {
-                                        reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
-                                    }
-                                }
-                                
+                            }
+                            else
+                            {
+                                reportData.Lrps.Add(IData.Window.changesList[i].IdChanges.ToString());
                             }
                         }
 
-                        ExcelDataCreator.NewReport(reportData);
-                        MessageBox.Show($"Отчет создан.\nОн находится в:\n{Environment.CurrentDirectory}\\Reports");
                     }
                 }
-                else
-                {
-                    ReportData reportData = ReportData.Report;
-                    ExcelDataCreator.NewReport(reportData);
-                    ReportData.Report = null;
-                    MessageBox.Show($"Отчет создан.\nОн находится в:\n{Environment.CurrentDirectory}\\Reports");
-                }
+
+                ExcelDataCreator.NewReport(reportData);
+                MessageBox.Show($"Отчет создан.\nОн находится в:\n{Environment.CurrentDirectory}\\Reports");
 
             },
                 check => IData.Window.changesList.Count > 0);

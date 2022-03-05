@@ -57,16 +57,26 @@ namespace ESMA.DataLoaders
 
                     var list = new EmpList(file);
 
-                    var newList = new ObservableCollection<EmpUnit>();
-
-                    for (int i = 0; i < list.Count; i++)
+                    ObservableCollection<EmpUnitChanges> NewList(DateTime ts, DateTime te)
                     {
-                        if (list[i].IsChecked)
-                        {
-                            newList.Add(new EmpUnit { Name = list[i].Name, IsChecked = list[i].IsChecked });
-                        }
-                    }
+                        var newList = new ObservableCollection<EmpUnitChanges>();
 
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            if (list[i].IsChecked)
+                            {
+                                newList.Add(new EmpUnitChanges 
+                                { 
+                                    Name = list[i].Name, 
+                                    IsChecked = list[i].IsChecked,
+                                    TimeStart = ts,
+                                    TimeEnd = te
+                                });
+                            }
+                        }
+
+                        return newList;
+                    }
 
                     for (int i = 0; i < table[0].Count; i++)
                     {
@@ -74,10 +84,8 @@ namespace ESMA.DataLoaders
                         {
                             IdChanges = int.Parse(table[0][i]),
                             C_Description = $"{table[2][i]}:{table[1][i]}",
-                            C_TimeStart = DateTime.Parse("00:00"),
-                            C_TimeEnd = DateTime.Parse("00:00"),
-                            C_Names = newList
-                        }); ;
+                            C_Names = NewList(DateTime.Parse("00:00"), DateTime.Parse("00:00"))
+                        });
                     }
                     progress.Report(75);
 
