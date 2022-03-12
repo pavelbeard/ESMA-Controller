@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows7.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <RootNamespace>ESMA</RootNamespace>
     <UseWPF>true</UseWPF>
     <Version>2.0</Version>
@@ -19,7 +19,7 @@
 v1.1.1.0 - Добавлена возможность согласовывать план работ
 v1.1.1.1 - Фикс багов
 v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
