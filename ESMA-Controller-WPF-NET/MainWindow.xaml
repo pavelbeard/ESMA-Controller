@@ -526,12 +526,16 @@
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <Label Content="Время начала:"/>
                                                                     <TextBox 
+                                                                        Focusable="True"
+                                                                        BorderThickness="0"
                                                                         Margin="25,0,0,0"
                                                                         Text="{Binding TimeStart, StringFormat={}{0:HH:mm}}"/>
                                                                 </StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <Label Content="Время окончания:"/>
                                                                     <TextBox
+                                                                        Focusable="True"
+                                                                        BorderThickness="0"
                                                                         Margin="1,0,0,0"
                                                                         Text="{Binding TimeEnd, StringFormat={}{0:HH:mm}}"/>
                                                                 </StackPanel>

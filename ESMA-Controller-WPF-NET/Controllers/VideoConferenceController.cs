@@ -83,7 +83,7 @@ namespace ESMA.Controllers
                     webDriver.FindElement(By.XPath("//input[@name='BT_GEN']")).Click();
                     Thread.Sleep(500);
                 }
-                void Work(int index, int innerIndex, List<string> source)
+                void Work(int index, string nameSource)
                 {
                     ArrayList arrayList = new()
                     {
@@ -143,7 +143,7 @@ namespace ESMA.Controllers
                     }
 
                     webDriver.FindElement(By.XPath("//input[@name='p_value1']")).Clear();
-                    webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(source[innerIndex]);
+                    webDriver.FindElement(By.XPath("//input[@name='p_value1']")).SendKeys(nameSource);
                     webDriver.FindElement(By.XPath("//input[@name='bt_where']")).Click();
                     webDriver.FindElement(By.XPath("//td//a")).Click();
                     webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
@@ -380,7 +380,7 @@ namespace ESMA.Controllers
                                           $"{TimeSpan.FromHours(time).Minutes}м:" +
                                           $"{TimeSpan.FromHours(time).Seconds}с");
 
-                                    Work(i, j, newNames);
+                                    Work(i, newNames[j]);
                                     progressPercentage += 1.0 / total * 100.0;
                                     progress.Report(progressPercentage);
                                 }
