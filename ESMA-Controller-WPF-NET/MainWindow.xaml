@@ -8,8 +8,8 @@
         xmlns:src="clr-namespace:ESMA.DataCollections"
         xmlns:cv="clr-namespace:ESMA.ViewModel"
         xmlns:calendars=" http://schemas.syncfusion.com/wpf" 
-        xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
         xmlns:core="clr-namespace:ESMA.DataCollections.CoreDataCollections"
+        xmlns:controls="Microsoft.UI.Xaml.Controls"
         mc:Ignorable="d"
         Title="ESMA-Controller" 
         Height="600" Width="1024" 
@@ -519,26 +519,16 @@
                                                         Height="100">
                                                     <ListBox.ItemTemplate>
                                                         <DataTemplate>
-                                                            <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
                                                                 <CheckBox
                                                                     IsChecked="{Binding IsChecked}" 
                                                                     Content="{Binding Name}"/>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <Label Content="Время начала:"/>
-                                                                    <TextBox 
-                                                                        Focusable="True"
-                                                                        BorderThickness="0"
-                                                                        Margin="25,0,0,0"
+                                                                <Label Content="ВН:"/>
+                                                                <TextBox 
                                                                         Text="{Binding TimeStart, StringFormat={}{0:HH:mm}}"/>
-                                                                </StackPanel>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <Label Content="Время окончания:"/>
-                                                                    <TextBox
-                                                                        Focusable="True"
-                                                                        BorderThickness="0"
-                                                                        Margin="1,0,0,0"
+                                                                <Label Content="ВО:"/>
+                                                                <TextBox
                                                                         Text="{Binding TimeEnd, StringFormat={}{0:HH:mm}}"/>
-                                                                </StackPanel>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ListBox.ItemTemplate>

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ESMA"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml"
+             xmlns:controls="using:Microsoft.UI.Xaml.Controls">
     <Application.Resources>
     </Application.Resources>
 </Application>

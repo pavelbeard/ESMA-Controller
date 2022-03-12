@@ -60,14 +60,14 @@ v1.1.5.0 - Убраны досадные баги</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="5.8.6" />
+    <PackageReference Include="EPPlus" Version="5.8.7" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Orc.Controls" Version="4.6.8" />
     <PackageReference Include="Selenium.Support" Version="4.1.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="98.0.4758.10200" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="99.0.4844.5100" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>

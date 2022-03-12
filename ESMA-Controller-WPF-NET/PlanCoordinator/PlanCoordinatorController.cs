@@ -20,24 +20,24 @@ namespace ESMA
             {
                 //Логинимся
                 LoginWindow("http://10.23.218.250:7790/pls/portal30/!ais_sys.dyn_home_page.show");
-                Thread.Sleep(1000);
+                WebDriverWait wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(5));
                 //раскрываем окно полностью
                 webDriver.Manage().Window.Maximize();
                 //Организация и планирование
-                webDriver.FindElement(By.XPath("//*[@id=\"menu_body\"]/div[1]/ul/li[4]/table/tbody/tr/td[2]/a")).Click();
-                Thread.Sleep(1000);
+                var element = wait.Until(el => el.FindElement(By.XPath("//*[@id=\"menu_body\"]/div[1]/ul/li[4]/table/tbody/tr/td[2]/a")));
+                element.Click();
                 //Суточное планирование работ
-                webDriver.FindElement(By.XPath("//*[@id=\"mod_4\"]/li[2]/table/tbody/tr/td[2]/a")).Click();
-                Thread.Sleep(1000);
+                element = wait.Until(el => el.FindElement(By.XPath("//*[@id=\"mod_4\"]/li[2]/table/tbody/tr/td[2]/a")));
+                element.Click();
                 //Смена фрейма
                 webDriver.SwitchTo().Frame("main_frame");
                 //Нажимаем на выпадающий список
-                Thread.Sleep(750);
-                webDriver.FindElement(By.XPath("//*[@id=\"select2-currentTeamName-container\"]")).Click();
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
+                element = wait.Until(el => el.FindElement(By.XPath("//*[@id=\"select2-currentTeamName-container\"]")));
+                element.Click();
                 //ищем рвб-11
-                webDriver.FindElement(By.XPath("/html/body/span/span/span[1]/input")).SendKeys("рвб-11");
-                Thread.Sleep(750);
+                element = wait.Until(el => el.FindElement(By.XPath("/html/body/span/span/span[1]/input")));
+                element.SendKeys("рвб-11");
                 //Выбираем связь совещаний - РВБ-11
                 webDriver.FindElement(By.XPath("/html/body/span/span/span[2]/ul/li")).Click();
                 Thread.Sleep(750);
@@ -70,6 +70,52 @@ namespace ESMA
                     }
                     else
                     {
+                        //список развертывания
+                        var expands = webDriver.FindElements(By.XPath("//*[@title='Развернуть']"));
+                        //add counts to list
+                        var rowsCnt = new List<int>();
+
+                        for (int i = 0; i < expands.Count; i++)
+                        {
+                            rowsCnt
+                                .Add(int
+                                .Parse(webDriver
+                                .FindElement(By.XPath($"//*[@id=\"DATA_TABLE\"]/tbody/tr[{i + 1}]/td/div[3]/span/b"))
+                                .Text));
+                        }
+                        //развертываем те списки, где больше нуля
+                        for (int i = 0; i < expands.Count; i++)
+                        {
+                            if (rowsCnt[i] > 0)
+                            {
+                                expands[i].Click();
+                            }
+                        }
+                        //меняем время
+                        //список начальных значений времени
+                        var times = webDriver.FindElements(By.XPath("//*[@name='time_begin']"));
+                        //заполняем эти поля
+                        var hour = new StringBuilder("08");
+                        for (int i = 0, j = 10; i < times.Count; i++, j++)
+                        {
+                            //если минуты будут равны 59 - "обнуляем"
+                            if (j == 59)
+                            {
+                                j = 10;
+                                hour = new StringBuilder("09");
+                            }
+
+                            times[i].SendKeys($"");
+                        }
+                        //меняем тип транспорта
+                        var typeTrans = webDriver.FindElements(By.XPath("//*[@name='type_trans']"));
+                        //change
+                        foreach (var item in typeTrans)
+                        {
+                            var select = new SelectElement(item);
+                            select.SelectByIndex(0);
+                        }
+
                         //список работников для сверки
                         var N = webDriver.FindElements(By.XPath("//*[contains(@name, 'emplName')]"));
                         //переменная числа, обозначающая референта
