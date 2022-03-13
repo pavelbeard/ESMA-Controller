@@ -11,7 +11,6 @@ namespace ESMA.ChangesCloser
     public class ChangesCloserElement : INotifyPropertyChanged
     {
         private string cce_Status;
-
         public int IdCCE { get; set; }
         public string CCE_Description { get; set; }
         public string CCE_Status
