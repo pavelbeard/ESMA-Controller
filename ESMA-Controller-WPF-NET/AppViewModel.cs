@@ -270,7 +270,7 @@ namespace ESMA.ViewModel
                     }
                     if (MwCurrentTab == 3)
                     {
-                        cc = new CTCLoader
+                        cc = new ChangesCreatorLoader
                         {
                             Login = t["Login"],
                             Password = t["Password"],
@@ -977,7 +977,7 @@ namespace ESMA.ViewModel
         {
             get => new(obj =>
             {
-                ReportData reportData = new ReportData();
+                ReportData reportData = new();
 
                 for (int i = 0; i < IData.Window.changesList.Count; i++)
                 {

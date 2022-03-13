@@ -22,15 +22,17 @@ namespace ESMA.ChangesCloser
 
                     progress.Report(10);
 
-                    //changeframe
-                    webDriver.SwitchTo().Frame("frame2");
+                    //change_frame
+                    FrameExist(webDriver, "frame2");
 
                     Thread.Sleep(750);
 
                     webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
-                    webDriver.SwitchTo().Frame("main_frame");
+                    
+                    //change_frame
+                    FrameExist(webDriver, "main_frame");
 
                     Thread.Sleep(500);
                     progress.Report(25);
@@ -57,6 +59,28 @@ namespace ESMA.ChangesCloser
                 {
 
                     throw;
+                }
+
+                bool FrameExist(IWebDriver driver, string frame)
+                {
+                    bool status = false;
+                    int i = 0;
+
+                    while (i < 10)
+                    {
+                        try
+                        {
+                            webDriver.SwitchTo().Frame(frame);
+                            status = true;
+                            return status;
+                        }
+                        catch (Exception)
+                        {
+                            i++;
+                        }
+                    }
+
+                    return status;
                 }
             });
         }
