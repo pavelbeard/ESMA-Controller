@@ -164,8 +164,8 @@ namespace ESMA.Controllers
                                 string[] frames = { "//*[@id=\"COLROW3\"]/td/img[1]", "//*[@id=\"COLROW4\"]/td/img[1]" };
                                 string[] windows = { $"javascript:objdCalendar.dateSelected={DateTime.Now.Day};objdCalendar.selDate();", $"javascript:dateSelected={DateTime.Now.Day};closeCalendar();" };
 
-                                string[] h = { IData.Changes[i].C_Names[j].TimeStart.ToString("HH"), IData.Changes[i].C_Names[j].TimeEnd.ToString("HH") };
-                                string[] m = { IData.Changes[i].C_Names[j].TimeStart.ToString("mm"), IData.Changes[i].C_Names[j].TimeEnd.ToString("mm") };
+                                string[] h = { IData.Changes[i].C_TimeStart.ToString("HH"), IData.Changes[i].C_TimeEnd.ToString("HH") };
+                                string[] m = { IData.Changes[i].C_TimeStart.ToString("mm"), IData.Changes[i].C_TimeEnd.ToString("mm") };
 
                                 webDriver.SwitchTo().Window(webDriver.WindowHandles[1]);
                                 //Календарь

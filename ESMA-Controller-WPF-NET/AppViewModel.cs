@@ -93,20 +93,18 @@ namespace ESMA.ViewModel
 
                     var list = new EmpList(file);
 
-                    ObservableCollection<EmpUnitChanges> NewList(DateTime ts, DateTime te)
+                    ObservableCollection<EmpUnit> NewList()
                     {
-                        var newList = new ObservableCollection<EmpUnitChanges>();
+                        var newList = new ObservableCollection<EmpUnit>();
 
                         for (int i = 0; i < list.Count; i++)
                         {
                             if (list[i].IsChecked)
                             {
-                                newList.Add(new EmpUnitChanges
+                                newList.Add(new EmpUnit
                                 {
                                     Name = list[i].Name,
-                                    IsChecked = list[i].IsChecked,
-                                    TimeStart = ts,
-                                    TimeEnd = te
+                                    IsChecked = list[i].IsChecked
                                 });
                             }
                         }
@@ -119,7 +117,9 @@ namespace ESMA.ViewModel
                         IdChanges = 0,
                         C_Description = "null",
                         C_Job = "null",
-                        C_Names = NewList(DateTime.Parse("00:00"), DateTime.Parse("00:00"))
+                        C_TimeStart = DateTime.Parse("00:00"),
+                        C_TimeEnd = DateTime.Parse("00:00"),
+                        C_Names = NewList()
                     };
                 }
                 catch (Exception)

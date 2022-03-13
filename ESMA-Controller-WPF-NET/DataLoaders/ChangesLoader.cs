@@ -34,7 +34,7 @@ namespace ESMA.DataLoaders
                     progress.Report(10);
 
                     //changeframe
-                    webDriver.SwitchTo().Frame("frame2");
+                    FrameExist(webDriver, "frame2");
 
                     Thread.Sleep(750);
 
@@ -42,7 +42,9 @@ namespace ESMA.DataLoaders
                     //webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
-                    webDriver.SwitchTo().Frame("main_frame");
+
+                    //change frame
+                    FrameExist(webDriver, "main_frame");
 
                     Thread.Sleep(500);
                     progress.Report(25);
@@ -57,20 +59,18 @@ namespace ESMA.DataLoaders
 
                     var list = new EmpList(file);
 
-                    ObservableCollection<EmpUnitChanges> NewList(DateTime ts, DateTime te)
+                    ObservableCollection<EmpUnit> NewList()
                     {
-                        var newList = new ObservableCollection<EmpUnitChanges>();
+                        var newList = new ObservableCollection<EmpUnit>();
 
                         for (int i = 0; i < list.Count; i++)
                         {
                             if (list[i].IsChecked)
                             {
-                                newList.Add(new EmpUnitChanges 
+                                newList.Add(new EmpUnit 
                                 { 
                                     Name = list[i].Name, 
-                                    IsChecked = list[i].IsChecked,
-                                    TimeStart = ts,
-                                    TimeEnd = te
+                                    IsChecked = list[i].IsChecked
                                 });
                             }
                         }
@@ -84,7 +84,9 @@ namespace ESMA.DataLoaders
                         {
                             IdChanges = int.Parse(table[0][i]),
                             C_Description = $"{table[2][i]}:{table[1][i]}",
-                            C_Names = NewList(DateTime.Parse("00:00"), DateTime.Parse("00:00"))
+                            C_TimeStart = DateTime.Parse("00:00"),
+                            C_TimeEnd = DateTime.Parse("00:00"),
+                            C_Names = NewList()
                         });
                     }
                     progress.Report(75);
@@ -99,6 +101,28 @@ namespace ESMA.DataLoaders
                     MessageBox.Show($"{e}", e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                     webDriver?.Quit();
                     return null;
+                }
+
+                bool FrameExist(IWebDriver driver, string frame)
+                {
+                    bool status = false;
+                    int i = 0;
+
+                    while (i < 10)
+                    {
+                        try
+                        {
+                            webDriver.SwitchTo().Frame(frame);
+                            status = true;
+                            return status;
+                        }
+                        catch (Exception)
+                        {
+                            i++;
+                        }
+                    }
+
+                    return status;
                 }
             });
         }

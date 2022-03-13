@@ -423,7 +423,8 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn 
+                            <!--Escort_NOT_USED-->
+                            <!--<DataGridTemplateColumn 
                                 Header="ФИО&#10;для сопровождения">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -445,7 +446,7 @@
                                         </Expander>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                             <DataGridCheckBoxColumn 
                                 Header="Внести&#10;персонал по сопровождению?" 
                                 Binding="{Binding Escort}" 
@@ -493,12 +494,12 @@
                             <DataGridTextColumn 
                                 Header="Примечание" 
                                 Binding="{Binding C_Description}"/>
-                            <!--<DataGridTextColumn 
+                            <DataGridTextColumn 
                                 Header="Время начала" 
-                                Binding=/>
+                                Binding="{Binding C_TimeStart, StringFormat={}{0:HH:mm}}"/>
                             <DataGridTextColumn 
                                 Header="Время окончания" 
-                                Binding="{Binding C_TimeEnd, StringFormat={}{0:HH:mm}}"/>-->
+                                Binding="{Binding C_TimeEnd, StringFormat={}{0:HH:mm}}"/>
                             <DataGridComboBoxColumn 
                                 Header="Работы" 
                                 ItemsSource="{StaticResource jobsChanges}" 
@@ -510,10 +511,6 @@
                                         <Expander 
                                             Header="Список сотрудников">
                                             <StackPanel>
-                                                <!--<Button
-                                                    Content="Изменить список" 
-                                                    DataContext="{StaticResource ViewModel}"
-                                                    Command="{Binding ChangeNames}"/>-->
                                                 <ListBox 
                                                         ItemsSource="{Binding C_Names}"
                                                         Height="100">
@@ -523,12 +520,6 @@
                                                                 <CheckBox
                                                                     IsChecked="{Binding IsChecked}" 
                                                                     Content="{Binding Name}"/>
-                                                                <Label Content="ВН:"/>
-                                                                <TextBox 
-                                                                        Text="{Binding TimeStart, StringFormat={}{0:HH:mm}}"/>
-                                                                <Label Content="ВО:"/>
-                                                                <TextBox
-                                                                        Text="{Binding TimeEnd, StringFormat={}{0:HH:mm}}"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </ListBox.ItemTemplate>

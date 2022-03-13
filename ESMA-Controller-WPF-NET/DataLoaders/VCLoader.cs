@@ -193,7 +193,7 @@ namespace ESMA.DataLoaders
                                 VC_TimeEnd = CmpDayHour(table[i][3], table[i][1]),
                                 VC_Theme = table[i][4],
                                 VC_Names = NewList(),
-                                VC_Names_For_Content = NewList(),
+                                //VC_Names_For_Content = NewList(),
                                 OperPersonal = true,
                                 CloseConference = true,
                                 Escort = false

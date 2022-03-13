@@ -32,15 +32,17 @@ namespace ESMA.DataLoaders
                     LoginWindow();
                     progress.Report(33);
 
-                    //changeframe
-                    webDriver.SwitchTo().Frame("frame2");
+                    //change_frame
+                    FrameExist(webDriver, "frame2");
 
                     Thread.Sleep(750);
 
                     webDriver.FindElement(By.XPath("//img[@title='Центральная страница']")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"openMenu('mod_4',4);return(false);\"]")).Click();
                     webDriver.FindElement(By.XPath("//a[@onclick=\"locFunc('!ais_sys.dyn_header.show',254); return false;\"]")).Click();
-                    webDriver.SwitchTo().Frame("main_frame");
+                    
+                    //change_frame
+                    FrameExist(webDriver, "main_frame");
 
                     var table = LoadLrpTable("ЛР ГТП");
                     Thread.Sleep(500);
@@ -92,6 +94,28 @@ namespace ESMA.DataLoaders
                     MessageBox.Show($"{e}", e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                     webDriver?.Quit();
                     return null;
+                }
+
+                bool FrameExist(IWebDriver driver, string frame)
+                {
+                    bool status = false;
+                    int i = 0;
+
+                    while (i < 10)
+                    {
+                        try
+                        {
+                            webDriver.SwitchTo().Frame(frame);
+                            status = true;
+                            return status;
+                        }
+                        catch (Exception)
+                        {
+                            i++;
+                        }
+                    }
+
+                    return status;
                 }
             });
         }

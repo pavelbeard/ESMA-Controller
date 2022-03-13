@@ -11,13 +11,15 @@ namespace ESMA.DataCollections.CoreDataCollections
 {
     public class Changes : INotifyPropertyChanged
     {
-        private ObservableCollection<EmpUnitChanges> c_Names;
+        private ObservableCollection<EmpUnit> c_Names;
         private string c_Status;
 
         public int IdChanges { get; set; }
         public string C_Description { get; set; }
+        public DateTime C_TimeStart { get; set; }
+        public DateTime C_TimeEnd { get; set; }
         public string C_Job { get; set; }
-        public ObservableCollection<EmpUnitChanges> C_Names
+        public ObservableCollection<EmpUnit> C_Names
         {
             get { return c_Names; }
             set

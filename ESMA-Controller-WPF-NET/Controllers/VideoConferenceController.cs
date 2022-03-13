@@ -385,30 +385,32 @@ namespace ESMA.Controllers
                                     progress.Report(progressPercentage);
                                 }
                                 j = 0;
-                                if (IData.VideoConferences[i].Escort)
-                                {
-                                    //новый список имен для сопровождения
-                                    //создание нового списка имен на основе отмеченных
-                                    var namesEscort = IData.VideoConferences[i].VC_Names_For_Content;
-                                    var newNamesEscort = new List<string>();
+                                #region Escort_NOT_USED
+                                //if (IData.VideoConferences[i].Escort)
+                                //{
+                                //    //новый список имен для сопровождения
+                                //    //создание нового списка имен на основе отмеченных
+                                //    var namesEscort = IData.VideoConferences[i].VC_Names_For_Content;
+                                //    var newNamesEscort = new List<string>();
 
-                                    for (int l = 0; l < namesEscort.Count; l++)
-                                    {
-                                        if (namesEscort[l].IsChecked)
-                                        {
-                                            newNamesEscort.Add(namesEscort[l].Name);
-                                        }
-                                    }
-                                    //close oper.personal
-                                    webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
-                                    //content
-                                    for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        Escort(i, k, newNamesEscort);
-                                    }
-                                    k = 0;
-                                }
+                                //    for (int l = 0; l < namesEscort.Count; l++)
+                                //    {
+                                //        if (namesEscort[l].IsChecked)
+                                //        {
+                                //            newNamesEscort.Add(namesEscort[l].Name);
+                                //        }
+                                //    }
+                                //    //close oper.personal
+                                //    webDriver.FindElement(By.CssSelector("input[value='Закрыть']")).Click();
+                                //    //content
+                                //    for (; k < IData.VideoConferences[i].VC_Names_For_Content.Count; k++)
+                                //    {
+                                //        token.ThrowIfCancellationRequested();
+                                //        Escort(i, k, newNamesEscort);
+                                //    }
+                                //    k = 0;
+                                //} 
+                                #endregion
                             }
                             else if (allOperPersonalNeeded)
                             {
